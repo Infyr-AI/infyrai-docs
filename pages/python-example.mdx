@@ -1,0 +1,111 @@
+# Python SDK Examples
+
+This guide demonstrates how to use Infyr.AI with the Python OpenAI SDK.
+
+## Installation
+
+First, install the OpenAI Python package:
+
+```bash
+pip install openai
+```
+
+## Basic Usage
+
+Here's a simple example using the OpenAI Python SDK with Infyr.AI:
+
+```python
+from openai import OpenAI
+
+# Initialize the client
+client = OpenAI(
+    base_url="https://api.infyr.ai/v1",
+    api_key="YOUR_INFYR_API_KEY"
+)
+
+# Make a completion request
+response = client.chat.completions.create(
+    model="lumo-8b",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "What is Solana blockchain?"}
+    ],
+    temperature=0.7,
+    max_tokens=150
+)
+
+# Print the response
+print(response.choices[0].message.content)
+```
+
+## Streaming Responses
+
+For streaming responses, which provide a better user experience for chat applications:
+
+```python
+# Create a streaming response
+stream = client.chat.completions.create(
+    model="lumo-8b",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Explain how blockchain works in simple terms."}
+    ],
+    stream=True
+)
+
+# Process the streaming response
+for chunk in stream:
+    if chunk.choices[0].delta.content is not None:
+        print(chunk.choices[0].delta.content, end="", flush=True)
+print()
+```
+
+## Advanced Usage
+
+### Model Selection
+
+You can specify different models based on your needs:
+
+```python
+# For complex reasoning tasks
+response = client.chat.completions.create(
+    model="deepseek-70b",
+    messages=[
+        {"role": "system", "content": "You are an expert in blockchain technology."},
+        {"role": "user", "content": "Explain the differences between Solana and Ethereum."}
+    ]
+)
+
+# For code generation
+response = client.chat.completions.create(
+    model="llama4-maverick",
+    messages=[
+        {"role": "system", "content": "You are a coding assistant."},
+        {"role": "user", "content": "Write a Python function to calculate Fibonacci numbers."}
+    ]
+)
+```
+
+## Error Handling
+
+Implement error handling for robust applications:
+
+```python
+try:
+    response = client.chat.completions.create(
+        model="lumo-8b",
+        messages=[
+            {"role": "user", "content": "Hello, how are you?"}
+        ]
+    )
+    print(response.choices[0].message.content)
+except Exception as e:
+    if "insufficient_quota" in str(e):
+        print("You need to add more credits to your account.")
+    elif "rate_limit_exceeded" in str(e):
+        print("You've exceeded the rate limit. Please slow down your requests.")
+    else:
+        print(f"An error occurred: {e}")
+```
+
+Visit our [GitHub repository](https://github.com/Infyr-AI/infyrai-examples/tree/main/py) for more Python code examples.

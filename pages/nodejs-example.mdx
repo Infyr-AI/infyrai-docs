@@ -1,0 +1,162 @@
+# Node.js SDK Examples
+
+This guide demonstrates how to use Infyr.AI with the Node.js OpenAI SDK.
+
+## Installation
+
+First, install the OpenAI Node.js package:
+
+```bash
+npm install openai
+# or
+yarn add openai
+```
+
+## Basic Usage
+
+Here's a simple example using the OpenAI Node.js SDK with Infyr.AI:
+
+```javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: 'YOUR_INFYR_API_KEY',
+  baseURL: 'https://api.infyr.ai/v1',
+});
+
+async function main() {
+  try {
+    const completion = await openai.chat.completions.create({
+      model: 'lumo-8b',
+      messages: [
+        { role: 'system', content: 'You are a helpful assistant.' },
+        { role: 'user', content: 'What is Solana blockchain?' }
+      ],
+      max_tokens: 150,
+      temperature: 0.7,
+    });
+
+    console.log(completion.choices[0].message.content);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+main();
+```
+
+## Streaming Responses
+
+For streaming responses, which provide a better user experience for chat applications:
+
+```javascript
+async function streamCompletion() {
+  try {
+    const stream = await openai.chat.completions.create({
+      model: 'lumo-8b',
+      messages: [
+        { role: 'system', content: 'You are a helpful assistant.' },
+        { role: 'user', content: 'Explain how blockchain works in simple terms.' }
+      ],
+      stream: true,
+    });
+
+    for await (const chunk of stream) {
+      process.stdout.write(chunk.choices[0]?.delta?.content || '');
+    }
+    console.log();
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+streamCompletion();
+```
+
+## Next.js Integration
+
+For Next.js applications, create an API route to handle Infyr.AI requests:
+
+```typescript
+// app/api/chat/route.ts
+import { NextRequest, NextResponse } from "next/server";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: process.env.INFYRAI_API_KEY,
+  baseURL: process.env.INFYRAI_BASE_URL || "https://api.infyr.ai/v1",
+});
+
+export async function POST(req: NextRequest) {
+  try {
+    const { messages } = await req.json();
+
+    const completion = await openai.chat.completions.create({
+      model: "lumo-8b",
+      messages,
+      max_tokens: 150,
+      temperature: 0.7,
+    });
+
+    return NextResponse.json(completion);
+  } catch (error) {
+    console.error("OpenAI API error:", error);
+    return NextResponse.json(
+      { error: "Error processing your request" },
+      { status: 500 }
+    );
+  }
+}
+```
+
+## Advanced Usage
+
+### Model Selection
+
+You can specify different models based on your needs:
+
+```javascript
+// For complex reasoning tasks
+const response = await openai.chat.completions.create({
+  model: 'deepseek-70b',
+  messages: [
+    { role: 'system', content: 'You are an expert in blockchain technology.' },
+    { role: 'user', content: 'Explain the differences between Solana and Ethereum.' }
+  ]
+});
+
+// For code generation
+const codeResponse = await openai.chat.completions.create({
+  model: 'llama4-maverick',
+  messages: [
+    { role: 'system', content: 'You are a coding assistant.' },
+    { role: 'user', content: 'Write a JavaScript function to calculate Fibonacci numbers.' }
+  ]
+});
+```
+
+## Error Handling
+
+Implement error handling for robust applications:
+
+```javascript
+try {
+  const response = await openai.chat.completions.create({
+    model: 'lumo-8b',
+    messages: [
+      { role: 'user', content: 'Hello, how are you?' }
+    ]
+  });
+  console.log(response.choices[0].message.content);
+} catch (error) {
+  if (error.message.includes('insufficient_quota')) {
+    console.error('You need to add more credits to your account.');
+  } else if (error.message.includes('rate_limit_exceeded')) {
+    console.error('You\'ve exceeded the rate limit. Please slow down your requests.');
+  } else {
+    console.error(`An error occurred: ${error.message}`);
+  }
+}
+```
+
+Visit our [GitHub repository](https://github.com/Infyr-AI/infyrai-examples/tree/main/js) for more Node.js code examples.
