@@ -18,6 +18,29 @@ const config: DocsThemeConfig = {
   useNextSeoProps() {
     return {
       titleTemplate: "%s – Infyr.AI Docs",
+      defaultTitle:
+        "Infyr.AI Documentation - Decentralized AI Inferencing Platform",
+      description:
+        "Infyr.AI is a decentralized, serverless AI inferencing platform built on Solana blockchain. Access powerful AI models with our APIs while solving GPU shortage challenges through our decentralized exchange.",
+      openGraph: {
+        type: "website",
+        locale: "en_US",
+        url: "https://docs.infyr.ai",
+        siteName: "Infyr.AI Documentation",
+        images: [
+          {
+            url: "/logo.png",
+            width: 128,
+            height: 128,
+            alt: "Infyr.AI Logo",
+          },
+        ],
+      },
+      twitter: {
+        handle: "@infyrai",
+        site: "@infyrai",
+        cardType: "summary_large_image",
+      },
     };
   },
 };
