@@ -9,9 +9,9 @@ const config: DocsThemeConfig = {
     </div>
   ),
   project: {
-    link: "https://github.com/infyr-ai/examples",
+    link: "https://github.com/infyr-ai/infyrai-docs",
   },
-  docsRepositoryBase: "https://github.com/infyr-ai/examples",
+  docsRepositoryBase: "https://github.com/infyr-ai/infyrai-docs",
   footer: {
     text: "Infyr.AI Documentation",
   },
