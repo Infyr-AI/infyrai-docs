@@ -1,13 +1,26 @@
 import React from "react";
 import { DocsThemeConfig } from "nextra-theme-docs";
+import { useTheme } from "next-themes";
 
-const config: DocsThemeConfig = {
-  logo: (
+const Logo = () => {
+  const { theme, resolvedTheme } = useTheme();
+  const currentTheme = resolvedTheme || theme;
+
+  return (
     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-      <img src="/logo.png" alt="Infyr.AI" width="128" height="128" />
+      <img
+        src={currentTheme === "dark" ? "/logo.png" : "/infyr-light.png"}
+        alt="Infyr.AI"
+        width="128"
+        height="128"
+      />
       <span style={{ fontWeight: "bold" }}>Documentation</span>
     </div>
-  ),
+  );
+};
+
+const config: DocsThemeConfig = {
+  logo: <Logo />,
   project: {
     link: "https://github.com/infyr-ai/infyrai-docs",
   },
