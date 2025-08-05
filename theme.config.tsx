@@ -15,6 +15,12 @@ const config: DocsThemeConfig = {
   footer: {
     text: "Infyr.AI Documentation",
   },
+  head: (
+    <>
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site:domain" content="docs.infyr.ai" />
+    </>
+  ),
   useNextSeoProps() {
     return {
       titleTemplate: "%s – Infyr.AI Docs",
