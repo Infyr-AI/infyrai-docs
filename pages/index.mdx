@@ -33,9 +33,136 @@ To use Infyr.AI, you need an API key:
 
 ## Available Models
 
-Infyr.AI offers a range of models for different use cases. 
+Infyr.AI offers a comprehensive range of AI models across different modalities:
 
-Refer our models page - [https://infyr.ai/#pricing](https://infyr.ai/#pricing)
+- **Text Generation**: DeepSeek, Llama, Hermes for chat and text generation
+- **Vision Models**: Multi-modal models for image understanding
+- **Audio Models**: Whisper for speech-to-text, PlayAI TTS for text-to-speech
+- **Video Generation**: Veo3 and Pixverse for creating videos from text
+- **Embedding Models**: For semantic search and similarity tasks
+
+For detailed pricing, visit [https://infyr.ai/#pricing](https://infyr.ai/#pricing)
+
+## Quick Start Examples
+
+### Text Generation
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.infyr.ai/v1",
+    api_key="YOUR_API_KEY"
+)
+
+# Chat completion
+response = client.chat.completions.create(
+    model="deepseek-70b",
+    messages=[
+        {"role": "user", "content": "Explain quantum computing in simple terms"}
+    ]
+)
+
+print(response.choices[0].message.content)
+```
+
+```javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: 'YOUR_API_KEY',
+  baseURL: 'https://api.infyr.ai/v1',
+});
+
+const response = await openai.chat.completions.create({
+  model: 'deepseek-70b',
+  messages: [
+    { role: 'user', content: 'Write a Python function to sort a list' }
+  ],
+});
+
+console.log(response.choices[0].message.content);
+```
+
+### Vision Analysis
+
+```python
+# Analyze an image
+response = client.chat.completions.create(
+    model="llama-3.2-vision",
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "What do you see in this image?"},
+                {
+                    "type": "image_url",
+                    "image_url": {"url": "https://example.com/image.jpg"}
+                }
+            ]
+        }
+    ]
+)
+```
+
+### Audio Processing
+
+```python
+# Speech-to-text transcription
+with open("audio.mp3", "rb") as audio_file:
+    response = client.audio.transcriptions.create(
+        model="whisper-1",
+        file=audio_file
+    )
+
+print("Transcription:", response.text)
+```
+
+```bash
+# Text-to-speech with HTTP API
+curl -X POST "https://api.infyr.ai/v1/audio/generations" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "playai/tts/v3",
+    "input": "Hello from Infyr.AI!",
+    "voice": "Jennifer (English (US)/American)"
+  }'
+```
+
+### Video Generation
+
+```python
+# Generate video from text
+response = client.chat.completions.create(
+    model="veo3",
+    messages=[
+        {
+            "role": "user",
+            "content": "A serene lake at sunset with mountains in the background"
+        }
+    ],
+    max_tokens=1,
+    extra_body={
+        "duration": "5s",
+        "aspect_ratio": "16:9"
+    }
+)
+
+print("Video request ID:", response.choices[0].message.content)
+```
+
+### Embeddings
+
+```python
+# Generate text embeddings
+response = client.embeddings.create(
+    model="text-embedding-3-large",
+    input="Your text to embed here"
+)
+
+print("Embedding vector:", response.data[0].embedding)
+```
 
 
 ## Language SDK Examples
@@ -44,6 +171,16 @@ For detailed SDK examples, check out:
 
 - [Python SDK Examples](/python-example)
 - [Node.js SDK Examples](/nodejs-example)
+
+## Model Documentation
+
+For comprehensive model specifications, capabilities, and advanced examples:
+
+- [Text Models](/models/text-models) - Chat, completion, and reasoning models
+- [Vision Models](/models/vision-models) - Multi-modal image understanding
+- [Audio Models](/models/audio-models) - Speech-to-text and text-to-speech
+- [Video Models](/models/video-models) - Text-to-video generation
+- [Embedding Models](/models/embedding-models) - Semantic search and similarity
 
 ## Next Steps
 
