@@ -1,0 +1,607 @@
+# Embedding Models
+
+Infyr.AI provides high-quality text embedding models for semantic search, similarity matching, and vector database applications. These models convert text into dense vector representations that capture semantic meaning.
+
+## Available Models
+
+### Multilingual E5 Large (`multilingual-e5-large-instruct`)
+
+**Capabilities:**
+- Multilingual text embeddings
+- Semantic similarity search
+- Cross-lingual retrieval
+- Document clustering
+- Instruction-following embeddings
+
+**Specifications:**
+- **Max Input Length**: 512 tokens
+- **Pricing**: $0.11 per million tokens
+- **Output**: Dense vector embeddings
+
+#### Basic Usage
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.infyr.ai/v1",
+    api_key="YOUR_INFYR_API_KEY"
+)
+
+# Generate embeddings for a single text
+response = client.embeddings.create(
+    model="multilingual-e5-large-instruct",
+    input="Artificial intelligence is transforming modern technology."
+)
+
+embedding = response.data[0].embedding
+print(f"Embedding dimensions: {len(embedding)}")
+print(f"First few values: {embedding[:5]}")
+```
+
+```javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: 'YOUR_INFYR_API_KEY',
+  baseURL: 'https://api.infyr.ai/v1',
+});
+
+// Generate embeddings for a single text
+const response = await openai.embeddings.create({
+  model: 'multilingual-e5-large-instruct',
+  input: 'Artificial intelligence is transforming modern technology.'
+});
+
+const embedding = response.data[0].embedding;
+console.log('Embedding dimensions:', embedding.length);
+console.log('First few values:', embedding.slice(0, 5));
+```
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/embeddings" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "multilingual-e5-large-instruct",
+    "input": "Artificial intelligence is transforming modern technology."
+  }'
+```
+
+#### Batch Processing
+
+```python
+# Generate embeddings for multiple texts
+texts = [
+    "Machine learning algorithms process data to find patterns.",
+    "Deep learning uses neural networks with multiple layers.",
+    "Natural language processing enables computers to understand text.",
+    "Computer vision allows machines to interpret visual information."
+]
+
+response = client.embeddings.create(
+    model="multilingual-e5-large-instruct",
+    input=texts
+)
+
+# Extract embeddings
+embeddings = [data.embedding for data in response.data]
+print(f"Generated {len(embeddings)} embeddings")
+```
+
+```javascript
+// Generate embeddings for multiple texts
+const texts = [
+  "Machine learning algorithms process data to find patterns.",
+  "Deep learning uses neural networks with multiple layers.",
+  "Natural language processing enables computers to understand text.",
+  "Computer vision allows machines to interpret visual information."
+];
+
+const response = await openai.embeddings.create({
+  model: 'multilingual-e5-large-instruct',
+  input: texts
+});
+
+// Extract embeddings
+const embeddings = response.data.map(item => item.embedding);
+console.log('Generated', embeddings.length, 'embeddings');
+```
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/embeddings" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "multilingual-e5-large-instruct",
+    "input": [
+      "Machine learning algorithms process data to find patterns.",
+      "Deep learning uses neural networks with multiple layers.",
+      "Natural language processing enables computers to understand text.",
+      "Computer vision allows machines to interpret visual information."
+    ]
+  }'
+```
+
+### GTE ModernBERT Base (`gte-modernbert-base`)
+
+**Capabilities:**
+- General text embeddings
+- High performance on diverse tasks
+- Optimized for retrieval applications
+- Modern transformer architecture
+
+**Specifications:**
+- **Max Input Length**: 512 tokens
+- **Pricing**: $0.11 per million tokens
+
+```python
+# Generate embeddings with GTE ModernBERT
+response = client.embeddings.create(
+    model="gte-modernbert-base",
+    input="This is a sample text for embedding generation."
+)
+
+embedding = response.data[0].embedding
+print(f"Embedding vector length: {len(embedding)}")
+```
+
+```javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: 'YOUR_INFYR_API_KEY',
+  baseURL: 'https://api.infyr.ai/v1',
+});
+
+// Generate embeddings with JavaScript
+const response = await openai.embeddings.create({
+  model: 'gte-modernbert-base',
+  input: 'This is a sample text for embedding generation.'
+});
+
+const embedding = response.data[0].embedding;
+console.log('Embedding vector length:', embedding.length);
+```
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/embeddings" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "gte-modernbert-base",
+    "input": "This is a sample text for embedding generation."
+  }'
+```
+
+### BGE Large EN v1.5 (`bge-large-en-v1.5`)
+
+**Capabilities:**
+- English text embeddings
+- High-quality semantic representations
+- Optimized for search and retrieval
+- Strong performance on benchmark tasks
+
+**Specifications:**
+- **Max Input Length**: 512 tokens
+- **Pricing**: $0.11 per million tokens
+
+```python
+# Specialized for English text processing
+response = client.embeddings.create(
+    model="bge-large-en-v1.5",
+    input="Advanced natural language processing techniques for enterprise applications."
+)
+
+embedding = response.data[0].embedding
+```
+
+## Use Case Examples
+
+### 1. Semantic Search Implementation
+
+```python
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Document corpus
+documents = [
+    "Python is a high-level programming language",
+    "Machine learning models require large datasets", 
+    "Web development frameworks simplify application building",
+    "Database optimization improves query performance",
+    "Cloud computing provides scalable infrastructure"
+]
+
+# Generate embeddings for documents
+doc_response = client.embeddings.create(
+    model="multilingual-e5-large-instruct",
+    input=documents
+)
+
+doc_embeddings = [data.embedding for data in doc_response.data]
+
+# User query
+query = "What programming languages are good for AI?"
+
+# Generate query embedding
+query_response = client.embeddings.create(
+    model="multilingual-e5-large-instruct",
+    input=query
+)
+
+query_embedding = query_response.data[0].embedding
+
+# Calculate similarities
+similarities = cosine_similarity(
+    [query_embedding], 
+    doc_embeddings
+)[0]
+
+# Find most relevant documents
+ranked_docs = sorted(
+    zip(documents, similarities), 
+    key=lambda x: x[1], 
+    reverse=True
+)
+
+print("Most relevant documents:")
+for doc, score in ranked_docs[:3]:
+    print(f"Score: {score:.3f} - {doc}")
+```
+
+### 2. Document Clustering
+
+```python
+import numpy as np
+from sklearn.cluster import KMeans
+
+# Large document collection
+documents = [
+    "Financial market analysis and investment strategies",
+    "Healthcare technology and medical innovations", 
+    "Climate change impacts on global agriculture",
+    "Artificial intelligence in autonomous vehicles",
+    "Renewable energy solutions for urban planning",
+    "Cybersecurity threats in digital banking",
+    "Biotechnology advances in drug discovery",
+    "Sustainable farming practices and food security"
+]
+
+# Generate embeddings
+response = client.embeddings.create(
+    model="multilingual-e5-large-instruct",
+    input=documents
+)
+
+embeddings = np.array([data.embedding for data in response.data])
+
+# Perform clustering
+n_clusters = 3
+kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+clusters = kmeans.fit_predict(embeddings)
+
+# Group documents by cluster
+clustered_docs = {}
+for i, cluster_id in enumerate(clusters):
+    if cluster_id not in clustered_docs:
+        clustered_docs[cluster_id] = []
+    clustered_docs[cluster_id].append(documents[i])
+
+# Display results
+for cluster_id, docs in clustered_docs.items():
+    print(f"Cluster {cluster_id}:")
+    for doc in docs:
+        print(f"  - {doc}")
+    print()
+```
+
+### 3. Multilingual Similarity Search
+
+```python
+# Multilingual documents
+multilingual_texts = [
+    "Artificial intelligence is revolutionizing technology",  # English
+    "La inteligencia artificial está revolucionando la tecnología",  # Spanish  
+    "L'intelligence artificielle révolutionne la technologie",  # French
+    "人工智能正在革新技术",  # Chinese
+    "Künstliche Intelligenz revolutioniert die Technologie"  # German
+]
+
+# Generate embeddings
+response = client.embeddings.create(
+    model="multilingual-e5-large-instruct",
+    input=multilingual_texts
+)
+
+embeddings = [data.embedding for data in response.data]
+
+# Calculate cross-lingual similarities
+similarities = cosine_similarity(embeddings)
+
+print("Cross-lingual similarity matrix:")
+for i, text1 in enumerate(multilingual_texts):
+    for j, text2 in enumerate(multilingual_texts):
+        if i != j:
+            print(f"{text1[:30]}... <-> {text2[:30]}... : {similarities[i][j]:.3f}")
+```
+
+### 4. Vector Database Integration
+
+```python
+# Example with Pinecone vector database
+import pinecone
+
+# Initialize Pinecone (example)
+# pinecone.init(api_key="your-api-key", environment="your-env")
+
+def store_documents_with_embeddings(documents, index_name):
+    """Store documents with their embeddings in a vector database"""
+    
+    # Generate embeddings
+    response = client.embeddings.create(
+        model="multilingual-e5-large-instruct",
+        input=documents
+    )
+    
+    # Prepare vectors for storage
+    vectors = []
+    for i, (doc, embedding_data) in enumerate(zip(documents, response.data)):
+        vectors.append({
+            "id": f"doc_{i}",
+            "values": embedding_data.embedding,
+            "metadata": {"text": doc}
+        })
+    
+    # Store in vector database
+    # index = pinecone.Index(index_name)
+    # index.upsert(vectors)
+    
+    return vectors
+
+def search_similar_documents(query, index_name, top_k=5):
+    """Search for similar documents using embeddings"""
+    
+    # Generate query embedding
+    response = client.embeddings.create(
+        model="multilingual-e5-large-instruct",
+        input=query
+    )
+    
+    query_embedding = response.data[0].embedding
+    
+    # Search vector database
+    # index = pinecone.Index(index_name)
+    # results = index.query(vector=query_embedding, top_k=top_k, include_metadata=True)
+    
+    # Return similar documents
+    # return [(match.metadata["text"], match.score) for match in results.matches]
+```
+
+### 5. Content Recommendation System
+
+```python
+def build_recommendation_system(user_preferences, content_library):
+    """Build a content recommendation system using embeddings"""
+    
+    # Generate embeddings for user preferences
+    pref_response = client.embeddings.create(
+        model="multilingual-e5-large-instruct",
+        input=user_preferences
+    )
+    
+    # Generate embeddings for content library
+    content_response = client.embeddings.create(
+        model="multilingual-e5-large-instruct", 
+        input=content_library
+    )
+    
+    pref_embeddings = [data.embedding for data in pref_response.data]
+    content_embeddings = [data.embedding for data in content_response.data]
+    
+    # Calculate user profile (average of preferences)
+    user_profile = np.mean(pref_embeddings, axis=0)
+    
+    # Calculate similarities with content
+    similarities = cosine_similarity(
+        [user_profile], 
+        content_embeddings
+    )[0]
+    
+    # Rank content by relevance
+    recommendations = sorted(
+        zip(content_library, similarities),
+        key=lambda x: x[1],
+        reverse=True
+    )
+    
+    return recommendations
+
+# Example usage
+user_prefs = [
+    "I enjoy reading about machine learning and AI",
+    "Data science and analytics interest me",
+    "I like technical tutorials and programming guides"
+]
+
+content = [
+    "Introduction to Neural Networks and Deep Learning",
+    "Cooking recipes for Italian cuisine", 
+    "Advanced Python programming techniques",
+    "Travel guide to European destinations",
+    "Statistical analysis with R programming",
+    "Fashion trends for summer season"
+]
+
+recommendations = build_recommendation_system(user_prefs, content)
+
+print("Content recommendations:")
+for content_item, score in recommendations[:3]:
+    print(f"Score: {score:.3f} - {content_item}")
+```
+
+## Performance Optimization
+
+### Batch Processing
+
+```python
+# Efficient batch processing for large datasets
+def process_embeddings_in_batches(texts, batch_size=100):
+    """Process embeddings in batches to handle large datasets"""
+    
+    all_embeddings = []
+    
+    for i in range(0, len(texts), batch_size):
+        batch = texts[i:i + batch_size]
+        
+        response = client.embeddings.create(
+            model="multilingual-e5-large-instruct",
+            input=batch
+        )
+        
+        batch_embeddings = [data.embedding for data in response.data]
+        all_embeddings.extend(batch_embeddings)
+        
+        print(f"Processed batch {i//batch_size + 1}/{(len(texts) + batch_size - 1)//batch_size}")
+    
+    return all_embeddings
+
+# Process large dataset
+large_dataset = ["Document " + str(i) for i in range(1000)]
+embeddings = process_embeddings_in_batches(large_dataset)
+```
+
+### Caching Strategy
+
+```python
+import hashlib
+import json
+import os
+
+class EmbeddingCache:
+    def __init__(self, cache_dir="embedding_cache"):
+        self.cache_dir = cache_dir
+        os.makedirs(cache_dir, exist_ok=True)
+    
+    def get_cache_key(self, text, model):
+        """Generate cache key for text and model"""
+        content = f"{text}:{model}"
+        return hashlib.md5(content.encode()).hexdigest()
+    
+    def get_cached_embedding(self, text, model):
+        """Retrieve cached embedding if available"""
+        cache_key = self.get_cache_key(text, model)
+        cache_file = os.path.join(self.cache_dir, f"{cache_key}.json")
+        
+        if os.path.exists(cache_file):
+            with open(cache_file, 'r') as f:
+                return json.load(f)['embedding']
+        return None
+    
+    def cache_embedding(self, text, model, embedding):
+        """Cache embedding for future use"""
+        cache_key = self.get_cache_key(text, model)
+        cache_file = os.path.join(self.cache_dir, f"{cache_key}.json")
+        
+        with open(cache_file, 'w') as f:
+            json.dump({'embedding': embedding}, f)
+    
+    def get_embedding_with_cache(self, text, model):
+        """Get embedding with caching"""
+        cached = self.get_cached_embedding(text, model)
+        if cached:
+            return cached
+        
+        response = client.embeddings.create(model=model, input=text)
+        embedding = response.data[0].embedding
+        
+        self.cache_embedding(text, model, embedding)
+        return embedding
+
+# Usage
+cache = EmbeddingCache()
+embedding = cache.get_embedding_with_cache(
+    "This text will be cached for future use",
+    "multilingual-e5-large-instruct"
+)
+```
+
+## Best Practices
+
+### Text Preprocessing
+
+```python
+import re
+
+def preprocess_text_for_embedding(text):
+    """Prepare text for optimal embedding generation"""
+    
+    # Remove excessive whitespace
+    text = re.sub(r'\s+', ' ', text)
+    
+    # Remove special characters if needed
+    # text = re.sub(r'[^\w\s]', '', text)
+    
+    # Truncate if too long (keep within token limits)
+    if len(text.split()) > 400:  # Rough token estimate
+        text = ' '.join(text.split()[:400])
+    
+    return text.strip()
+
+# Apply preprocessing
+raw_texts = [
+    "   This    text   has   extra   spaces   ",
+    "Very long text that might exceed token limits..." * 100
+]
+
+processed_texts = [preprocess_text_for_embedding(text) for text in raw_texts]
+```
+
+### Model Selection Guide
+
+- **multilingual-e5-large-instruct**: Best for multilingual applications and instruction-following tasks
+- **gte-modernbert-base**: Good general-purpose embeddings with modern architecture
+- **bge-large-en-v1.5**: Optimal for English-only applications requiring high quality
+
+### Error Handling
+
+```python
+import time
+from openai import OpenAI, RateLimitError, APIError
+
+def robust_embedding_generation(texts, model, max_retries=3):
+    """Generate embeddings with retry logic and error handling"""
+    
+    for attempt in range(max_retries):
+        try:
+            response = client.embeddings.create(
+                model=model,
+                input=texts
+            )
+            return [data.embedding for data in response.data]
+            
+        except RateLimitError:
+            wait_time = 2 ** attempt  # Exponential backoff
+            print(f"Rate limit hit. Waiting {wait_time} seconds...")
+            time.sleep(wait_time)
+            
+        except APIError as e:
+            print(f"API Error: {e}")
+            if attempt == max_retries - 1:
+                raise
+            time.sleep(1)
+            
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            if attempt == max_retries - 1:
+                raise
+            time.sleep(1)
+    
+    raise Exception("Max retries exceeded")
+
+# Usage with error handling
+embeddings = robust_embedding_generation(
+    ["Sample text for embedding"],
+    "multilingual-e5-large-instruct"
+)
+```

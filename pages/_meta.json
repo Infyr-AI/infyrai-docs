@@ -1,5 +1,16 @@
 {
   "index": "Quick Start Guide",
   "python-example": "Python SDK Examples",
-  "nodejs-example": "Node.js SDK Examples"
+  "nodejs-example": "Node.js SDK Examples",
+  "models": {
+    "title": "Model Examples",
+    "items": {
+      "index": "Model Overview",
+      "text-models": "Text Generation Models",
+      "vision-models": "Vision Models",
+      "embedding-models": "Embedding Models",
+      "audio-models": "Audio Models",
+      "video-models": "Video Models"
+    }
+  }
 }

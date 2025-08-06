@@ -1,0 +1,845 @@
+# Audio Models
+
+Infyr.AI provides comprehensive audio processing capabilities including speech-to-text transcription and text-to-speech synthesis. These models support various audio formats and languages for diverse audio applications.
+
+## Available Models
+
+### Speech-to-Text
+
+#### Whisper-1 (`whisper-1`)
+
+**Capabilities:**
+- Multi-language speech recognition
+- Audio transcription with timestamps
+- Audio translation to English
+- Robust noise handling
+- Multiple audio format support
+
+**Specifications:**
+- **Supported Formats**: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, webm
+- **Max File Size**: 25MB
+- **Pricing**: $6.6 per hour of audio processed
+- **Languages**: 99+ languages supported
+
+#### Basic Transcription
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.infyr.ai/v1",
+    api_key="YOUR_INFYR_API_KEY"
+)
+
+# Transcribe audio file
+with open("audio.mp3", "rb") as audio_file:
+    response = client.audio.transcriptions.create(
+        model="whisper-1",
+        file=audio_file,
+        response_format="text"
+    )
+
+print("Transcription:", response)
+```
+
+```javascript
+import OpenAI from 'openai';
+import fs from 'fs';
+
+const openai = new OpenAI({
+  apiKey: 'YOUR_INFYR_API_KEY',
+  baseURL: 'https://api.infyr.ai/v1',
+});
+
+// Transcribe audio file
+const audioFile = fs.createReadStream('audio.mp3');
+
+const response = await openai.audio.transcriptions.create({
+  model: 'whisper-1',
+  file: audioFile,
+  response_format: 'text'
+});
+
+console.log('Transcription:', response);
+```
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/audio/transcriptions" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -F "model=whisper-1" \
+  -F "file=@audio.mp3" \
+  -F "response_format=text"
+```
+
+#### Advanced Transcription with Options
+
+```python
+# Transcription with additional parameters
+with open("interview.wav", "rb") as audio_file:
+    response = client.audio.transcriptions.create(
+        model="whisper-1",
+        file=audio_file,
+        response_format="json",  # Get detailed response
+        language="en",  # Specify language for better accuracy
+        prompt="This is an interview about artificial intelligence and machine learning.",  # Context prompt
+        temperature=0.2  # Lower temperature for more consistent results
+    )
+
+print("Transcription:", response.text)
+print("Language:", response.language)
+print("Duration:", response.duration)
+```
+
+#### Transcription with Timestamps
+
+```python
+# Get transcription with word-level timestamps
+with open("meeting.mp3", "rb") as audio_file:
+    response = client.audio.transcriptions.create(
+        model="whisper-1",
+        file=audio_file,
+        response_format="verbose_json",
+        timestamp_granularities=["word"]
+    )
+
+print("Full transcription:", response.text)
+
+# Print word-level timestamps
+for word in response.words:
+    print(f"{word.word} ({word.start:.2f}s - {word.end:.2f}s)")
+```
+
+### Audio Translation
+
+```python
+# Translate non-English audio to English
+with open("spanish_audio.mp3", "rb") as audio_file:
+    response = client.audio.translations.create(
+        model="whisper-1",
+        file=audio_file,
+        response_format="json"
+    )
+
+print("English translation:", response.text)
+```
+
+### Text-to-Speech
+
+#### PlayAI TTS v3 (`playai/tts/v3`)
+
+**Capabilities:**
+- High-quality speech synthesis
+- Multiple voice options
+- Natural-sounding audio generation
+- Customizable voice characteristics
+- Multiple output formats
+
+**Specifications:**
+- **Pricing**: $0.0006 per second of generated audio
+- **Output Formats**: MP3, WAV, OGG
+- **Voice Options**: Multiple preset voices available
+
+#### Basic Text-to-Speech
+
+```python
+import requests
+import json
+import time
+
+# Generate speech from text
+url = "https://api.infyr.ai/v1/audio/generations"
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+}
+
+data = {
+    "model": "playai/tts/v3",
+    "input": "Hello, welcome to Infyr.AI! We provide cutting-edge AI models for your applications.",
+    "voice": "Jennifer (English (US)/American)"
+}
+
+response = requests.post(url, headers=headers, json=data)
+response_data = response.json()
+
+print("Audio generation request ID:", response_data["request_id"])
+print("Status:", response_data["status"])
+
+# Check status and get result
+request_id = response_data["request_id"]
+while True:
+    status_url = f"https://api.infyr.ai/v1/audio/generations/{request_id}/status"
+    status_response = requests.get(status_url, headers=headers)
+    status_data = status_response.json()
+    
+    if status_data["status"] == "completed":
+        # Get the audio result
+        result_url = f"https://api.infyr.ai/v1/audio/generations/{request_id}/result"
+        result_response = requests.get(result_url, headers=headers)
+        result_data = result_response.json()
+        audio_url = result_data["audio"]["url"]
+        print("Audio ready:", audio_url)
+        break
+    elif status_data["status"] == "failed":
+        print("Generation failed")
+        break
+    
+    time.sleep(2)  # Wait 2 seconds before checking again
+```
+
+#### HTTP API with cURL
+
+```bash
+# Generate speech from text
+curl -X POST "https://api.infyr.ai/v1/audio/generations" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "playai/tts/v3",
+    "input": "Hello, welcome to Infyr.AI! We provide cutting-edge AI models for your applications.",
+    "voice": "Jennifer (English (US)/American)"
+  }'
+
+# Response will include request_id, use it to check status
+curl -X GET "https://api.infyr.ai/v1/audio/generations/{request_id}/status" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+
+# When status is "completed", get the result
+curl -X GET "https://api.infyr.ai/v1/audio/generations/{request_id}/result" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+#### Advanced TTS with Custom Settings
+
+```javascript
+// Generate speech with custom parameters
+const generateAudio = async () => {
+  const response = await fetch('https://api.infyr.ai/v1/audio/generations', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer YOUR_INFYR_API_KEY',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'playai/tts/v3',
+      input: 'This is a sample text for high-quality speech synthesis with custom voice settings.',
+      voice: 'Jennifer (English (US)/American)',
+      response_format: 'url',
+      seed: 42  // For reproducible results
+    })
+  });
+
+  const responseData = await response.json();
+  console.log('Generation started:', responseData.request_id);
+  return responseData.request_id;
+};
+
+// Poll for completion
+async function waitForCompletion(requestId) {
+  while (true) {
+    const statusResponse = await fetch(
+      `https://api.infyr.ai/v1/audio/generations/${requestId}/status`,
+      {
+        headers: {
+          'Authorization': 'Bearer YOUR_INFYR_API_KEY'
+        }
+      }
+    );
+    
+    const status = await statusResponse.json();
+    
+    if (status.status === 'completed') {
+      const resultResponse = await fetch(
+        `https://api.infyr.ai/v1/audio/generations/${requestId}/result`,
+        {
+          headers: {
+            'Authorization': 'Bearer YOUR_INFYR_API_KEY'
+          }
+        }
+      );
+      
+      const result = await resultResponse.json();
+      return result.audio.url;
+    } else if (status.status === 'failed') {
+      throw new Error('Audio generation failed');
+    }
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+}
+
+// Usage
+const requestId = await generateAudio();
+const audioUrl = await waitForCompletion(requestId);
+console.log('Audio available at:', audioUrl);
+```
+
+## Use Case Examples
+
+### 1. Meeting Transcription Service
+
+```python
+import os
+from pathlib import Path
+
+class MeetingTranscriber:
+    def __init__(self, api_key):
+        self.client = OpenAI(
+            base_url="https://api.infyr.ai/v1",
+            api_key=api_key
+        )
+    
+    def transcribe_meeting(self, audio_file_path, meeting_context=""):
+        """Transcribe a meeting with speaker identification context"""
+        
+        with open(audio_file_path, "rb") as audio_file:
+            response = self.client.audio.transcriptions.create(
+                model="whisper-1",
+                file=audio_file,
+                response_format="verbose_json",
+                prompt=f"This is a business meeting. {meeting_context}",
+                temperature=0.1
+            )
+        
+        return {
+            "transcript": response.text,
+            "language": response.language, 
+            "duration": response.duration,
+            "segments": response.segments if hasattr(response, 'segments') else None
+        }
+    
+    def generate_summary(self, transcript):
+        """Generate a summary using a text model"""
+        summary_response = self.client.chat.completions.create(
+            model="lumo-8b",
+            messages=[
+                {
+                    "role": "system", 
+                    "content": "You are a professional meeting summarizer. Create a concise summary with key points and action items."
+                },
+                {
+                    "role": "user", 
+                    "content": f"Please summarize this meeting transcript:\n\n{transcript}"
+                }
+            ],
+            max_tokens=500
+        )
+        
+        return summary_response.choices[0].message.content
+
+# Usage
+transcriber = MeetingTranscriber("YOUR_API_KEY")
+result = transcriber.transcribe_meeting(
+    "team_meeting.mp3",
+    "Participants discuss quarterly goals and project updates."
+)
+
+print("Transcript:", result["transcript"])
+summary = transcriber.generate_summary(result["transcript"])
+print("Summary:", summary)
+```
+
+### 2. Multilingual Content Creation
+
+```python
+import requests
+import json
+
+def create_multilingual_audio_content(text, languages, api_key):
+    """Create audio content in multiple languages"""
+    
+    # First, translate the text to different languages
+    translated_content = {}
+    
+    for lang_code, lang_name in languages.items():
+        # Translate using text model (assuming HTTP API for consistency)
+        chat_url = "https://api.infyr.ai/v1/chat/completions"
+        chat_headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        chat_data = {
+            "model": "lumo-8b",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": f"You are a professional translator. Translate the following text to {lang_name}. Only return the translation."
+                },
+                {
+                    "role": "user",
+                    "content": text
+                }
+            ],
+            "max_tokens": 200
+        }
+        
+        translation_response = requests.post(chat_url, headers=chat_headers, json=chat_data)
+        translation_data = translation_response.json()
+        translated_text = translation_data["choices"][0]["message"]["content"]
+        translated_content[lang_code] = translated_text
+        
+        # Generate audio for each translation using HTTP
+        tts_url = "https://api.infyr.ai/v1/audio/generations"
+        tts_headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        tts_data = {
+            "model": "playai/tts/v3",
+            "input": translated_text,
+            "voice": get_voice_for_language(lang_code)
+        }
+        
+        tts_response = requests.post(tts_url, headers=tts_headers, json=tts_data)
+        tts_response_data = tts_response.json()
+        
+        print(f"Generated audio for {lang_name}: {tts_response_data['request_id']}")
+    
+    return translated_content
+
+def get_voice_for_language(lang_code):
+    """Map language codes to appropriate voices"""
+    voice_mapping = {
+        'en': 'Jennifer (English (US)/American)',
+        'es': 'Maria (Spanish/Spain)',
+        'fr': 'Claire (French/France)',
+        'de': 'Hans (German/Germany)'
+    }
+    return voice_mapping.get(lang_code, 'Jennifer (English (US)/American)')
+
+# Create content in multiple languages
+languages = {
+    'en': 'English',
+    'es': 'Spanish', 
+    'fr': 'French'
+}
+
+content = create_multilingual_audio_content(
+    "Welcome to our AI-powered platform. Experience the future of technology today.",
+    languages,
+    "YOUR_API_KEY"
+)
+```
+
+### 3. Podcast Processing Pipeline
+
+```python
+import json
+from datetime import datetime
+
+class PodcastProcessor:
+    def __init__(self, api_key):
+        self.client = OpenAI(
+            base_url="https://api.infyr.ai/v1",
+            api_key=api_key
+        )
+    
+    def process_podcast_episode(self, audio_file_path, episode_info):
+        """Complete podcast processing pipeline"""
+        
+        # Step 1: Transcribe the episode
+        print("Transcribing podcast episode...")
+        with open(audio_file_path, "rb") as audio_file:
+            transcript_response = self.client.audio.transcriptions.create(
+                model="whisper-1",
+                file=audio_file,
+                response_format="verbose_json",
+                prompt="This is a podcast episode with multiple speakers discussing various topics."
+            )
+        
+        # Step 2: Generate episode summary
+        print("Generating episode summary...")
+        summary_response = self.client.chat.completions.create(
+            model="deepseek-70b",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a podcast content analyzer. Create an engaging summary, extract key topics, and identify memorable quotes."
+                },
+                {
+                    "role": "user",
+                    "content": f"Analyze this podcast transcript and provide:\n1. Episode summary\n2. Key topics discussed\n3. Notable quotes\n4. Main takeaways\n\nTranscript:\n{transcript_response.text}"
+                }
+            ],
+            max_tokens=1000
+        )
+        
+        # Step 3: Generate show notes
+        print("Creating show notes...")
+        show_notes_response = self.client.chat.completions.create(
+            model="lumo-8b", 
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a professional podcast editor. Create detailed show notes with timestamps and topics."
+                },
+                {
+                    "role": "user",
+                    "content": f"Create structured show notes for this podcast:\n\n{transcript_response.text}"
+                }
+            ],
+            max_tokens=800
+        )
+        
+        # Step 4: Create audio highlights (optional)
+        # This would involve identifying key segments and generating shorter audio clips
+        
+        return {
+            "episode_info": episode_info,
+            "transcript": transcript_response.text,
+            "duration": transcript_response.duration,
+            "language": transcript_response.language,
+            "summary": summary_response.choices[0].message.content,
+            "show_notes": show_notes_response.choices[0].message.content,
+            "processed_at": datetime.now().isoformat()
+        }
+    
+    def save_results(self, results, output_file):
+        """Save processing results to JSON file"""
+        with open(output_file, 'w') as f:
+            json.dump(results, f, indent=2)
+
+# Usage
+processor = PodcastProcessor("YOUR_API_KEY")
+episode_info = {
+    "title": "AI in Healthcare",
+    "host": "Dr. Sarah Johnson", 
+    "guest": "Dr. Michael Chen",
+    "episode_number": 42
+}
+
+results = processor.process_podcast_episode(
+    "podcast_episode_42.mp3", 
+    episode_info
+)
+
+processor.save_results(results, "episode_42_processed.json")
+```
+
+### 4. Voice-Interactive Application
+
+```python
+import asyncio
+import aiohttp
+import json
+
+class VoiceAssistant:
+    def __init__(self, api_key):
+        self.api_key = api_key
+        self.base_url = "https://api.infyr.ai/v1"
+        self.conversation_history = []
+    
+    async def process_voice_input(self, audio_file_path):
+        """Process voice input and generate voice response"""
+        
+        async with aiohttp.ClientSession() as session:
+            # Step 1: Transcribe user input
+            headers = {"Authorization": f"Bearer {self.api_key}"}
+            
+            with open(audio_file_path, "rb") as audio_file:
+                form_data = aiohttp.FormData()
+                form_data.add_field('file', audio_file, filename='audio.mp3')
+                form_data.add_field('model', 'whisper-1')
+                form_data.add_field('response_format', 'text')
+                
+                async with session.post(
+                    f"{self.base_url}/audio/transcriptions",
+                    headers=headers,
+                    data=form_data
+                ) as response:
+                    transcript_data = await response.json()
+                    user_message = transcript_data["text"].strip()
+            
+            self.conversation_history.append({"role": "user", "content": user_message})
+            
+            # Step 2: Generate response using chat model
+            chat_data = {
+                "model": "lumo-8b",
+                "messages": [
+                    {"role": "system", "content": "You are a helpful voice assistant. Keep responses conversational and concise."},
+                    *self.conversation_history[-10:]  # Keep last 10 messages for context
+                ],
+                "max_tokens": 200,
+                "temperature": 0.7
+            }
+            
+            async with session.post(
+                f"{self.base_url}/chat/completions",
+                headers={**headers, "Content-Type": "application/json"},
+                json=chat_data
+            ) as response:
+                chat_response = await response.json()
+                assistant_message = chat_response["choices"][0]["message"]["content"]
+            
+            self.conversation_history.append({"role": "assistant", "content": assistant_message})
+            
+            # Step 3: Generate voice response
+            tts_data = {
+                "model": "playai/tts/v3",
+                "input": assistant_message,
+                "voice": "Jennifer (English (US)/American)"
+            }
+            
+            async with session.post(
+                f"{self.base_url}/audio/generations",
+                headers={**headers, "Content-Type": "application/json"},
+                json=tts_data
+            ) as response:
+                tts_response = await response.json()
+            
+            return {
+                "user_input": user_message,
+                "assistant_response": assistant_message,
+                "audio_request_id": tts_response["request_id"]
+            }
+    
+    async def get_response_audio(self, request_id):
+        """Get the generated audio response"""
+        headers = {"Authorization": f"Bearer {self.api_key}"}
+        
+        async with aiohttp.ClientSession() as session:
+            while True:
+                async with session.get(
+                    f"{self.base_url}/audio/generations/{request_id}/status",
+                    headers=headers
+                ) as response:
+                    status = await response.json()
+                
+                if status["status"] == "completed":
+                    async with session.get(
+                        f"{self.base_url}/audio/generations/{request_id}/result",
+                        headers=headers
+                    ) as response:
+                        result = await response.json()
+                        return result["audio"]["url"]
+                elif status["status"] == "failed":
+                    raise Exception("Audio generation failed")
+                
+                await asyncio.sleep(1)
+
+# Usage
+assistant = VoiceAssistant("YOUR_API_KEY")
+
+async def voice_conversation():
+    result = await assistant.process_voice_input("user_question.wav")
+    print("User said:", result["user_input"])
+    print("Assistant responds:", result["assistant_response"])
+    
+    audio_url = await assistant.get_response_audio(result["audio_request_id"])
+    print("Response audio:", audio_url)
+
+# Run the conversation
+asyncio.run(voice_conversation())
+```
+
+## Best Practices
+
+### Audio File Optimization
+
+```python
+def optimize_audio_for_processing(input_file, output_file):
+    """Prepare audio files for optimal processing"""
+    
+    # Example using pydub (install with: pip install pydub)
+    from pydub import AudioSegment
+    
+    # Load audio file
+    audio = AudioSegment.from_file(input_file)
+    
+    # Optimize for Whisper
+    audio = audio.set_frame_rate(16000)  # Whisper prefers 16kHz
+    audio = audio.set_channels(1)        # Mono audio
+    audio = audio.normalize()            # Normalize volume
+    
+    # Remove silence from beginning and end
+    audio = audio.strip_silence()
+    
+    # Export optimized version
+    audio.export(output_file, format="wav")
+    
+    return output_file
+```
+
+### Error Handling and Retry Logic
+
+```python
+import time
+from openai import OpenAI, APIError, RateLimitError
+
+def robust_audio_processing(file_path, operation="transcribe", max_retries=3):
+    """Process audio with robust error handling"""
+    
+    for attempt in range(max_retries):
+        try:
+            with open(file_path, "rb") as audio_file:
+                if operation == "transcribe":
+                    response = client.audio.transcriptions.create(
+                        model="whisper-1",
+                        file=audio_file,
+                        response_format="json"
+                    )
+                elif operation == "translate":
+                    response = client.audio.translations.create(
+                        model="whisper-1", 
+                        file=audio_file,
+                        response_format="json"
+                    )
+            
+            return response
+            
+        except RateLimitError:
+            wait_time = (2 ** attempt) * 60  # Exponential backoff in minutes
+            print(f"Rate limit hit. Waiting {wait_time/60:.1f} minutes...")
+            time.sleep(wait_time)
+            
+        except APIError as e:
+            print(f"API Error: {e}")
+            if attempt == max_retries - 1:
+                raise
+            time.sleep(30)  # Wait 30 seconds before retry
+            
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            if attempt == max_retries - 1:
+                raise
+            time.sleep(10)
+    
+    raise Exception("Max retries exceeded")
+
+# Usage
+result = robust_audio_processing("audio_file.mp3", "transcribe")
+```
+
+### Cost Optimization
+
+```python
+def calculate_audio_processing_cost(file_path):
+    """Calculate estimated cost for audio processing"""
+    
+    from pydub import AudioSegment
+    
+    # Get audio duration
+    audio = AudioSegment.from_file(file_path)
+    duration_seconds = len(audio) / 1000.0
+    duration_hours = duration_seconds / 3600.0
+    
+    # Whisper pricing: $6.6 per hour
+    transcription_cost = duration_hours * 6.6
+    
+    print(f"Audio duration: {duration_seconds:.1f} seconds ({duration_hours:.3f} hours)")
+    print(f"Estimated transcription cost: ${transcription_cost:.4f}")
+    
+    return transcription_cost
+
+# Check cost before processing
+cost = calculate_audio_processing_cost("long_meeting.mp3")
+if cost > 1.0:  # Only process if cost is under $1
+    print("Cost too high, consider splitting the file")
+else:
+    # Process the file
+    pass
+```
+
+## Integration Examples
+
+### Flask Web Application
+
+```python
+from flask import Flask, request, jsonify
+import tempfile
+import os
+import requests
+
+app = Flask(__name__)
+API_KEY = "YOUR_INFYR_API_KEY"
+BASE_URL = "https://api.infyr.ai/v1"
+
+@app.route('/transcribe', methods=['POST'])
+def transcribe_audio():
+    """API endpoint for audio transcription"""
+    
+    if 'audio' not in request.files:
+        return jsonify({"error": "No audio file provided"}), 400
+    
+    audio_file = request.files['audio']
+    
+    # Save uploaded file temporarily
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_file:
+        audio_file.save(temp_file.name)
+        
+        try:
+            # Transcribe audio using HTTP API
+            headers = {"Authorization": f"Bearer {API_KEY}"}
+            
+            with open(temp_file.name, 'rb') as f:
+                files = {"file": f}
+                data = {
+                    "model": "whisper-1",
+                    "response_format": "json"
+                }
+                
+                response = requests.post(
+                    f"{BASE_URL}/audio/transcriptions",
+                    headers=headers,
+                    files=files,
+                    data=data
+                )
+                
+                response_data = response.json()
+            
+            result = {
+                "transcript": response_data.get("text", ""),
+                "language": response_data.get("language", ""),
+                "duration": response_data.get("duration", None)
+            }
+            
+            return jsonify(result)
+            
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+            
+        finally:
+            # Clean up temp file
+            os.unlink(temp_file.name)
+
+@app.route('/synthesize', methods=['POST'])
+def synthesize_speech():
+    """API endpoint for text-to-speech"""
+    
+    data = request.get_json()
+    text = data.get('text', '')
+    voice = data.get('voice', 'Jennifer (English (US)/American)')
+    
+    try:
+        headers = {
+            "Authorization": f"Bearer {API_KEY}",
+            "Content-Type": "application/json"
+        }
+        
+        tts_data = {
+            "model": "playai/tts/v3",
+            "input": text,
+            "voice": voice
+        }
+        
+        response = requests.post(
+            f"{BASE_URL}/audio/generations",
+            headers=headers,
+            json=tts_data
+        )
+        
+        response_data = response.json()
+        
+        return jsonify({
+            "request_id": response_data.get("request_id"),
+            "status": response_data.get("status")
+        })
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
+```
