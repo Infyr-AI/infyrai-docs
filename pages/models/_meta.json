@@ -1,0 +1,8 @@
+{
+    "index": "Model Overview",
+    "text-models": "Text Generation Models",
+    "vision-models": "Vision Models",
+    "embedding-models": "Embedding Models",
+    "audio-models": "Audio Models",
+    "video-models": "Video Models"
+}

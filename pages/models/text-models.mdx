@@ -1,0 +1,636 @@
+# Text Generation Models
+
+Infyr.AI offers a comprehensive selection of text generation models, each optimized for specific use cases. All models support the OpenAI chat completions format.
+
+## Available Models
+
+### General Purpose Models
+
+#### DeepSeek Models
+
+**DeepSeek-70B** (`deepseek-70b`)
+- **Use Case**: General text generation with high quality
+- **Context Length**: 131,072 tokens
+- **Pricing**: $0.22 input / $0.66 output per million tokens
+- **Supports**: Tool calling, function calls
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.infyr.ai/v1",
+    api_key="YOUR_INFYR_API_KEY"
+)
+
+response = client.chat.completions.create(
+    model="deepseek-70b",
+    messages=[
+        {"role": "system", "content": "You are a helpful AI assistant."},
+        {"role": "user", "content": "Explain quantum computing in simple terms."}
+    ],
+    max_tokens=500,
+    temperature=0.7
+)
+
+print(response.choices[0].message.content)
+```
+
+```javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: 'YOUR_INFYR_API_KEY',
+  baseURL: 'https://api.infyr.ai/v1',
+});
+
+const response = await openai.chat.completions.create({
+  model: 'deepseek-70b',
+  messages: [
+    { role: 'system', content: 'You are a helpful AI assistant.' },
+    { role: 'user', content: 'Explain quantum computing in simple terms.' }
+  ],
+  max_tokens: 500,
+  temperature: 0.7
+});
+
+console.log(response.choices[0].message.content);
+```
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "deepseek-70b",
+    "messages": [
+      {"role": "system", "content": "You are a helpful AI assistant."},
+      {"role": "user", "content": "Explain quantum computing in simple terms."}
+    ],
+    "max_tokens": 500,
+    "temperature": 0.7
+  }'
+```
+
+**DeepSeek-V3** (`deepseek-v3`)
+- **Use Case**: Latest DeepSeek model with enhanced capabilities
+- **Context Length**: 163,840 tokens
+- **Pricing**: $0.374 input / $0.968 output per million tokens
+
+```python
+import openai
+
+client = openai.OpenAI(
+    base_url="https://api.infyr.ai/v1",
+    api_key="YOUR_INFYR_API_KEY"
+)
+
+response = client.chat.completions.create(
+    model="deepseek-v3",
+    messages=[
+        {"role": "system", "content": "You are an expert technical writer."},
+        {"role": "user", "content": "Write a comprehensive guide about REST API design."}
+    ],
+    max_tokens=2000,
+    temperature=0.8
+)
+
+print(response.choices[0].message.content)
+```
+
+```javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: 'YOUR_INFYR_API_KEY',
+  baseURL: 'https://api.infyr.ai/v1',
+});
+
+const response = await openai.chat.completions.create({
+  model: 'deepseek-v3',
+  messages: [
+    { role: 'system', content: 'You are an expert technical writer.' },
+    { role: 'user', content: 'Write a comprehensive guide about REST API design.' }
+  ],
+  max_tokens: 2000,
+  temperature: 0.8
+});
+
+console.log(response.choices[0].message.content);
+```
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "deepseek-v3",
+    "messages": [
+      {"role": "system", "content": "You are an expert technical writer."},
+      {"role": "user", "content": "Write a comprehensive guide about REST API design."}
+    ],
+    "max_tokens": 2000,
+    "temperature": 0.8
+  }'
+```
+
+#### Llama Models
+
+**Llama-3.3-70B** (`llama33-70b`)
+- **Use Case**: Balanced performance for most applications
+- **Context Length**: 131,072 tokens  
+- **Pricing**: $0.132 input / $0.33 output per million tokens
+
+```python
+# Example: Creative writing assistant
+response = client.chat.completions.create(
+    model="llama33-70b",
+    messages=[
+        {"role": "system", "content": "You are a creative writing assistant."},
+        {"role": "user", "content": "Write a short story about a robot learning to paint."}
+    ],
+    max_tokens=800,
+    temperature=0.9  # Higher temperature for creativity
+)
+
+print(response.choices[0].message.content)
+```
+
+```javascript
+// Example: Creative writing assistant
+const response = await openai.chat.completions.create({
+  model: 'llama33-70b',
+  messages: [
+    { role: 'system', content: 'You are a creative writing assistant.' },
+    { role: 'user', content: 'Write a short story about a robot learning to paint.' }
+  ],
+  max_tokens: 800,
+  temperature: 0.9
+});
+
+console.log(response.choices[0].message.content);
+```
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "llama33-70b",
+    "messages": [
+      {"role": "system", "content": "You are a creative writing assistant."},
+      {"role": "user", "content": "Write a short story about a robot learning to paint."}
+    ],
+    "max_tokens": 800,
+    "temperature": 0.9
+  }'
+```
+
+**Llama-3.2-3B** (`llama32-3b`)
+- **Use Case**: Fast, efficient model for simpler tasks
+- **Context Length**: 131,072 tokens
+- **Pricing**: $0.0165 input / $0.0275 output per million tokens
+
+```python
+# Example: Quick Q&A
+response = client.chat.completions.create(
+    model="llama32-3b",
+    messages=[
+        {"role": "user", "content": "What is the capital of France?"}
+    ],
+    max_tokens=50,
+    temperature=0.3
+)
+
+print(response.choices[0].message.content)
+```
+
+```javascript
+// Example: Quick Q&A
+const response = await openai.chat.completions.create({
+  model: 'llama32-3b',
+  messages: [
+    { role: 'user', content: 'What is the capital of France?' }
+  ],
+  max_tokens: 50,
+  temperature: 0.3
+});
+
+console.log(response.choices[0].message.content);
+```
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "llama32-3b",
+    "messages": [
+      {"role": "user", "content": "What is the capital of France?"}
+    ],
+    "max_tokens": 50,
+    "temperature": 0.3
+  }'
+```
+
+### Reasoning Models
+
+**DeepSeek-R1-671B** (`deepseek-r1-671b`)
+- **Use Case**: Complex reasoning and problem-solving
+- **Context Length**: 163,840 tokens
+- **Pricing**: $0.594 input / $2.398 output per million tokens
+
+```python
+# Example: Complex reasoning task
+response = client.chat.completions.create(
+    model="deepseek-r1-671b",
+    messages=[
+        {"role": "system", "content": "You are an expert problem solver. Think step by step."},
+        {"role": "user", "content": """
+        A company has 100 employees. 60% work from home, 30% work in the office, 
+        and the rest work hybrid. If 20% of remote workers want to switch to hybrid, 
+        and 10% of office workers want to switch to remote, what will be the new distribution?
+        """}
+    ],
+    max_tokens=1000,
+    temperature=0.1  # Lower temperature for precise reasoning
+)
+
+print(response.choices[0].message.content)
+```
+
+```javascript
+// Example: Complex reasoning task
+const response = await openai.chat.completions.create({
+  model: 'deepseek-r1-671b',
+  messages: [
+    { role: 'system', content: 'You are an expert problem solver. Think step by step.' },
+    { role: 'user', content: `
+      A company has 100 employees. 60% work from home, 30% work in the office, 
+      and the rest work hybrid. If 20% of remote workers want to switch to hybrid, 
+      and 10% of office workers want to switch to remote, what will be the new distribution?
+    ` }
+  ],
+  max_tokens: 1000,
+  temperature: 0.1
+});
+
+console.log(response.choices[0].message.content);
+```
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "deepseek-r1-671b",
+    "messages": [
+      {"role": "system", "content": "You are an expert problem solver. Think step by step."},
+      {"role": "user", "content": "A company has 100 employees. 60% work from home, 30% work in the office, and the rest work hybrid. If 20% of remote workers want to switch to hybrid, and 10% of office workers want to switch to remote, what will be the new distribution?"}
+    ],
+    "max_tokens": 1000,
+    "temperature": 0.1
+  }'
+```
+
+### Code Generation Models
+
+**Qwen-2.5-Coder-32B** (`qwen-coder-32b`)
+- **Use Case**: Specialized for programming and code generation
+- **Context Length**: 32,768 tokens
+- **Pricing**: $0.077 input / $0.176 output per million tokens
+
+```python
+# Example: Code generation
+response = client.chat.completions.create(
+    model="qwen-coder-32b",
+    messages=[
+        {"role": "system", "content": "You are an expert Python programmer."},
+        {"role": "user", "content": """
+        Create a Python class for a binary tree with methods to:
+        1. Insert a new node
+        2. Search for a value
+        3. Perform in-order traversal
+        Include proper error handling and docstrings.
+        """}
+    ],
+    max_tokens=1500,
+    temperature=0.2
+)
+
+print(response.choices[0].message.content)
+```
+
+```javascript
+// Example: Code generation
+const response = await openai.chat.completions.create({
+  model: 'qwen-coder-32b',
+  messages: [
+    { role: 'system', content: 'You are an expert JavaScript programmer.' },
+    { role: 'user', content: `
+      Create a JavaScript class for a binary tree with methods to:
+      1. Insert a new node
+      2. Search for a value
+      3. Perform in-order traversal
+      Include proper error handling and JSDoc comments.
+    ` }
+  ],
+  max_tokens: 1500,
+  temperature: 0.2
+});
+
+console.log(response.choices[0].message.content);
+```
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "qwen-coder-32b",
+    "messages": [
+      {"role": "system", "content": "You are an expert Python programmer."},
+      {"role": "user", "content": "Create a Python class for a binary tree with methods to: 1. Insert a new node 2. Search for a value 3. Perform in-order traversal. Include proper error handling and docstrings."}
+    ],
+    "max_tokens": 1500,
+    "temperature": 0.2
+  }'
+```
+
+### High-Context Models
+
+**Llama-4-Maverick** (`llama4-maverick`)
+- **Use Case**: Long document processing and analysis
+- **Context Length**: 1,048,576 tokens
+- **Pricing**: $0.198 input / $0.66 output per million tokens
+
+```python
+# Example: Long document analysis
+response = client.chat.completions.create(
+    model="llama4-maverick",
+    messages=[
+        {"role": "system", "content": "You are a document analyzer. Provide comprehensive summaries and insights."},
+        {"role": "user", "content": f"Analyze this research paper and provide key insights: {long_document}"}
+    ],
+    max_tokens=2000,
+    temperature=0.5
+)
+
+print(response.choices[0].message.content)
+```
+
+```javascript
+// Example: Long document analysis
+const response = await openai.chat.completions.create({
+  model: 'llama4-maverick',
+  messages: [
+    { 
+      role: 'system', 
+      content: 'You are a document analyzer. Provide comprehensive summaries and insights.' 
+    },
+    { 
+      role: 'user', 
+      content: `Analyze this research paper and provide key insights: ${longDocument}` 
+    }
+  ],
+  max_tokens: 2000,
+  temperature: 0.5
+});
+
+console.log(response.choices[0].message.content);
+```
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "llama4-maverick",
+    "messages": [
+      {"role": "system", "content": "You are a document analyzer. Provide comprehensive summaries and insights."},
+      {"role": "user", "content": "Analyze this research paper and provide key insights: [long document content]"}
+    ],
+    "max_tokens": 2000,
+    "temperature": 0.5
+  }'
+```
+
+**Llama-4-Scout** (`llama4-scout`)
+- **Use Case**: Efficient processing with extended context
+- **Context Length**: 1,048,576 tokens
+- **Pricing**: $0.088 input / $0.33 output per million tokens
+
+```python
+# Example: Efficient long-context processing
+response = client.chat.completions.create(
+    model="llama4-scout",
+    messages=[
+        {"role": "system", "content": "You are an efficient AI assistant for processing large amounts of text."},
+        {"role": "user", "content": "Summarize the key points from this lengthy report."}
+    ],
+    max_tokens=1000,
+    temperature=0.3
+)
+
+print(response.choices[0].message.content)
+```
+
+```javascript
+// Example: Efficient long-context processing
+const response = await openai.chat.completions.create({
+  model: 'llama4-scout',
+  messages: [
+    { role: 'system', content: 'You are an efficient AI assistant for processing large amounts of text.' },
+    { role: 'user', content: 'Summarize the key points from this lengthy report.' }
+  ],
+  max_tokens: 1000,
+  temperature: 0.3
+});
+
+console.log(response.choices[0].message.content);
+```
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "llama4-scout",
+    "messages": [
+      {"role": "system", "content": "You are an efficient AI assistant for processing large amounts of text."},
+      {"role": "user", "content": "Summarize the key points from this lengthy report."}
+    ],
+    "max_tokens": 1000,
+    "temperature": 0.3
+  }'
+```
+
+### Specialty Models
+
+**Hermes-3-70B** (`hermes3-70b`)
+- **Use Case**: Instruction following and role-playing
+- **Context Length**: 131,072 tokens
+- **Pricing**: $0.132 input / $0.33 output per million tokens
+
+```python
+# Example: Role-playing assistant
+response = client.chat.completions.create(
+    model="hermes3-70b",
+    messages=[
+        {"role": "system", "content": "You are a experienced software architect. Respond in character."},
+        {"role": "user", "content": "How would you design a microservices architecture for an e-commerce platform?"}
+    ],
+    max_tokens=1200,
+    temperature=0.7
+)
+
+print(response.choices[0].message.content)
+```
+
+```javascript
+// Example: Role-playing assistant
+const response = await openai.chat.completions.create({
+  model: 'hermes3-70b',
+  messages: [
+    { role: 'system', content: 'You are an experienced software architect. Respond in character.' },
+    { role: 'user', content: 'How would you design a microservices architecture for an e-commerce platform?' }
+  ],
+  max_tokens: 1200,
+  temperature: 0.7
+});
+
+console.log(response.choices[0].message.content);
+```
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "hermes3-70b",
+    "messages": [
+      {"role": "system", "content": "You are an experienced software architect. Respond in character."},
+      {"role": "user", "content": "How would you design a microservices architecture for an e-commerce platform?"}
+    ],
+    "max_tokens": 1200,
+    "temperature": 0.7
+  }'
+```
+
+## Streaming Responses
+
+All text models support streaming for real-time responses:
+
+```python
+# Python streaming example
+stream = client.chat.completions.create(
+    model="lumo-8b",
+    messages=[
+        {"role": "user", "content": "Tell me about artificial intelligence"}
+    ],
+    stream=True
+)
+
+for chunk in stream:
+    if chunk.choices[0].delta.content is not None:
+        print(chunk.choices[0].delta.content, end="", flush=True)
+```
+
+```javascript
+// JavaScript streaming example
+const stream = await openai.chat.completions.create({
+  model: 'lumo-8b',
+  messages: [
+    { role: 'user', content: 'Explain machine learning concepts' }
+  ],
+  stream: true,
+});
+
+for await (const chunk of stream) {
+  process.stdout.write(chunk.choices[0]?.delta?.content || '');
+}
+```
+
+## Function Calling
+
+Models that support tool calling can execute functions:
+
+```python
+# Function calling example
+functions = [
+    {
+        "name": "get_weather",
+        "description": "Get current weather information for a location",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "location": {
+                    "type": "string",
+                    "description": "The city and state, e.g. San Francisco, CA"
+                }
+            },
+            "required": ["location"]
+        }
+    }
+]
+
+response = client.chat.completions.create(
+    model="deepseek-70b",
+    messages=[
+        {"role": "user", "content": "What's the weather like in New York?"}
+    ],
+    functions=functions,
+    function_call="auto"
+)
+```
+
+## Best Practices
+
+### Model Selection Guide
+
+- **Simple tasks**: Use `llama32-3b` for cost-effective basic operations
+- **General use**: `lumo-8b` or `llama33-70b` for balanced performance
+- **Complex reasoning**: `deepseek-r1-671b` for multi-step problem solving
+- **Code generation**: `qwen-coder-32b` for programming tasks
+- **Long documents**: `llama4-maverick` for high-context applications
+
+### Performance Tips
+
+1. **Temperature Settings**:
+   - `0.1-0.3`: Precise, factual responses
+   - `0.5-0.7`: Balanced creativity and accuracy
+   - `0.8-1.0`: Creative, diverse outputs
+
+2. **Token Management**:
+   - Set appropriate `max_tokens` based on expected response length
+   - Monitor token usage for cost optimization
+
+3. **Prompt Engineering**:
+   - Use clear, specific instructions
+   - Provide examples in few-shot prompts
+   - Structure complex requests step-by-step
+
+## Error Handling
+
+```python
+import openai
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.infyr.ai/v1",
+    api_key="YOUR_INFYR_API_KEY"
+)
+
+try:
+    response = client.chat.completions.create(
+        model="lumo-8b",
+        messages=[{"role": "user", "content": "Hello!"}]
+    )
+    print(response.choices[0].message.content)
+    
+except openai.RateLimitError:
+    print("Rate limit exceeded. Please slow down your requests.")
+except openai.APIError as e:
+    print(f"API error occurred: {e}")
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")
+```

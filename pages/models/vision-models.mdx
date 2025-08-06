@@ -1,0 +1,555 @@
+# Vision Models
+
+Infyr.AI provides powerful multi-modal vision models that can understand and analyze images alongside text. These models excel at image description, visual question answering, optical character recognition (OCR), and visual reasoning tasks.
+
+## Available Models
+
+### Llama-3.2-11B Vision (`llama3-vision-11b`)
+
+**Capabilities:**
+- Image understanding and description
+- Visual question answering
+- OCR and text extraction from images
+- Scene analysis and object detection
+- Document analysis
+
+**Specifications:**
+- **Context Length**: 131,072 tokens
+- **Pricing**: $0.033 input / $0.055 output per million tokens
+- **Supports**: Tool calling, function calls
+
+#### Basic Image Analysis
+
+```python
+from openai import OpenAI
+import base64
+
+client = OpenAI(
+    base_url="https://api.infyr.ai/v1",
+    api_key="YOUR_INFYR_API_KEY"
+)
+
+# Method 1: Using image URL
+response = client.chat.completions.create(
+    model="llama3-vision-11b",
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "What do you see in this image?"},
+                {
+                    "type": "image_url",
+                    "image_url": {"url": "https://example.com/image.jpg"}
+                }
+            ]
+        }
+    ],
+    max_tokens=500
+)
+
+print(response.choices[0].message.content)
+```
+
+```javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: 'YOUR_INFYR_API_KEY',
+  baseURL: 'https://api.infyr.ai/v1',
+});
+
+// Method 1: Using image URL
+const response = await openai.chat.completions.create({
+  model: 'llama3-vision-11b',
+  messages: [
+    {
+      role: 'user',
+      content: [
+        { type: 'text', text: 'What do you see in this image?' },
+        {
+          type: 'image_url',
+          image_url: { url: 'https://example.com/image.jpg' }
+        }
+      ]
+    }
+  ],
+  max_tokens: 500
+});
+
+console.log(response.choices[0].message.content);
+```
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "llama3-vision-11b",
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {"type": "text", "text": "What do you see in this image?"},
+          {
+            "type": "image_url",
+            "image_url": {"url": "https://example.com/image.jpg"}
+          }
+        ]
+      }
+    ],
+    "max_tokens": 500
+  }'
+```
+
+#### Image Analysis with Base64
+
+```python
+# Method 2: Using base64 encoded image
+def encode_image(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode('utf-8')
+
+base64_image = encode_image("path/to/your/image.jpg")
+
+response = client.chat.completions.create(
+    model="llama3-vision-11b",
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "Describe this image in detail and identify any text present."},
+                {
+                    "type": "image_url",
+                    "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}
+                }
+            ]
+        }
+    ],
+    max_tokens=800
+)
+
+print(response.choices[0].message.content)
+```
+
+```javascript
+import fs from 'fs';
+
+// Method 2: Using base64 encoded image
+function encodeImage(imagePath) {
+  const imageBuffer = fs.readFileSync(imagePath);
+  return imageBuffer.toString('base64');
+}
+
+const base64Image = encodeImage('path/to/your/image.jpg');
+
+const response = await openai.chat.completions.create({
+  model: 'llama3-vision-11b',
+  messages: [
+    {
+      role: 'user',
+      content: [
+        { type: 'text', text: 'Describe this image in detail and identify any text present.' },
+        {
+          type: 'image_url',
+          image_url: { url: `data:image/jpeg;base64,${base64Image}` }
+        }
+      ]
+    }
+  ],
+  max_tokens: 800
+});
+
+console.log(response.choices[0].message.content);
+```
+
+```bash
+# First, encode your image to base64
+BASE64_IMAGE=$(base64 -i path/to/your/image.jpg)
+
+curl -X POST "https://api.infyr.ai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "llama3-vision-11b",
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {"type": "text", "text": "Describe this image in detail and identify any text present."},
+          {
+            "type": "image_url",
+            "image_url": {"url": "data:image/jpeg;base64,'$BASE64_IMAGE'"}
+          }
+        ]
+      }
+    ],
+    "max_tokens": 800
+  }'
+```
+
+### Qwen2.5-VL-72B (`qwen-2.5-72b-vl-instruct`)
+
+**Capabilities:**
+- Advanced visual reasoning
+- Complex multi-image analysis
+- High-quality image captioning
+- Technical diagram understanding
+- Multi-language visual content processing
+
+**Specifications:**
+- **Context Length**: 65,536 tokens
+- **Pricing**: $0.9 input / $1.8 output per million tokens
+
+#### Advanced Visual Analysis
+
+```javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: 'YOUR_INFYR_API_KEY',
+  baseURL: 'https://api.infyr.ai/v1',
+});
+
+// Complex visual reasoning task
+const response = await openai.chat.completions.create({
+  model: 'qwen-2.5-72b-vl-instruct',
+  messages: [
+    {
+      role: 'user',
+      content: [
+        { 
+          type: 'text', 
+          text: 'Analyze this chart and provide insights about the trends shown. What recommendations would you make based on the data?' 
+        },
+        {
+          type: 'image_url',
+          image_url: { url: 'https://example.com/business-chart.png' }
+        }
+      ]
+    }
+  ],
+  max_tokens: 1200,
+  temperature: 0.3
+});
+
+console.log(response.choices[0].message.content);
+```
+
+### Arcee Spotlight (`arcee-spotlight`)
+
+**Capabilities:**
+- Specialized visual analysis
+- Image-to-text generation
+- Visual content moderation
+- Creative image descriptions
+
+**Specifications:**
+- **Context Length**: 32,768 tokens
+- **Pricing**: $0.8 input / $1.6 output per million tokens
+
+## Use Case Examples
+
+### 1. Document OCR and Analysis
+
+```python
+# Extract and analyze text from documents
+response = client.chat.completions.create(
+    model="llama3-vision-11b",
+    messages=[
+        {
+            "role": "system",
+            "content": "You are an expert document analyzer. Extract all text accurately and provide structured analysis."
+        },
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "Extract all text from this document and summarize the key points. Format the output as structured data."
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {"url": "https://example.com/document.pdf"}
+                }
+            ]
+        }
+    ],
+    max_tokens=1500
+)
+```
+
+### 2. Visual Question Answering
+
+```javascript
+// Answer specific questions about images
+const response = await openai.chat.completions.create({
+  model: 'llama3-vision-11b',
+  messages: [
+    {
+      role: 'user',
+      content: [
+        { 
+          type: 'text', 
+          text: 'How many people are in this image? What are they doing? What is the setting?' 
+        },
+        {
+          type: 'image_url',
+          image_url: { url: 'https://example.com/group-photo.jpg' }
+        }
+      ]
+    }
+  ],
+  max_tokens: 300
+});
+```
+
+### 3. Technical Diagram Understanding
+
+```python
+# Analyze technical diagrams and flowcharts
+response = client.chat.completions.create(
+    model="qwen-2.5-72b-vl-instruct",
+    messages=[
+        {
+            "role": "system",
+            "content": "You are a technical expert who can interpret engineering diagrams and architectural plans."
+        },
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "Explain this system architecture diagram. Identify all components and their relationships."
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {"url": "https://example.com/architecture-diagram.png"}
+                }
+            ]
+        }
+    ],
+    max_tokens=1000
+)
+```
+
+### 4. Multi-Image Comparison
+
+```python
+# Compare multiple images
+response = client.chat.completions.create(
+    model="llama3-vision-11b",
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "Compare these two product images. What are the key differences? Which one appears to be higher quality?"
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {"url": "https://example.com/product1.jpg"}
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {"url": "https://example.com/product2.jpg"}
+                }
+            ]
+        }
+    ],
+    max_tokens: 600
+)
+```
+
+### 5. Creative Image Description
+
+```javascript
+// Generate creative descriptions for images
+const response = await openai.chat.completions.create({
+  model: 'arcee-spotlight',
+  messages: [
+    {
+      role: 'system',
+      content: 'You are a creative writer who crafts vivid, artistic descriptions of images.'
+    },
+    {
+      role: 'user',
+      content: [
+        { 
+          type: 'text', 
+          text: 'Write a poetic description of this landscape image that could be used for a travel brochure.' 
+        },
+        {
+          type: 'image_url',
+          image_url: { url: 'https://example.com/landscape.jpg' }
+        }
+      ]
+    }
+  ],
+  max_tokens: 400,
+  temperature: 0.8
+});
+```
+
+## Best Practices
+
+### Image Format and Size
+
+- **Supported Formats**: JPEG, PNG, GIF, WebP
+- **Recommended Size**: Up to 20MB per image
+- **Resolution**: Higher resolution images provide better detail recognition
+- **Multiple Images**: Can process multiple images in a single request
+
+### Prompt Engineering for Vision
+
+1. **Be Specific**: Ask clear, specific questions about what you want to know
+2. **Context Matters**: Provide context about what type of analysis you need
+3. **Structure Requests**: Break down complex visual analysis into steps
+4. **Use Examples**: Provide examples of the expected output format
+
+### Performance Optimization
+
+```python
+# Efficient vision processing
+response = client.chat.completions.create(
+    model="llama3-vision-11b",
+    messages=[
+        {
+            "role": "system",
+            "content": "Provide concise, structured responses. Focus on the key visual elements."
+        },
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "List the main objects in this image with their locations (left, center, right, top, bottom)."
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {"url": "https://example.com/scene.jpg"}
+                }
+            ]
+        }
+    ],
+    max_tokens=250,  # Limit tokens for faster processing
+    temperature=0.1   # Lower temperature for consistent object detection
+)
+```
+
+## Error Handling
+
+```python
+import openai
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.infyr.ai/v1",
+    api_key="YOUR_INFYR_API_KEY"
+)
+
+try:
+    response = client.chat.completions.create(
+        model="llama3-vision-11b",
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": "Describe this image"},
+                    {"type": "image_url", "image_url": {"url": "invalid_url"}}
+                ]
+            }
+        ]
+    )
+    
+except openai.BadRequestError as e:
+    print(f"Invalid request: {e}")
+    # Handle invalid image URLs or formats
+    
+except openai.RateLimitError:
+    print("Rate limit exceeded for vision requests")
+    
+except Exception as e:
+    print(f"Vision processing error: {e}")
+```
+
+## Integration Examples
+
+### Next.js Application
+
+```typescript
+// app/api/analyze-image/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: process.env.INFYRAI_API_KEY,
+  baseURL: 'https://api.infyr.ai/v1',
+});
+
+export async function POST(req: NextRequest) {
+  try {
+    const { imageUrl, question } = await req.json();
+
+    const response = await openai.chat.completions.create({
+      model: 'llama3-vision-11b',
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: question },
+            { type: 'image_url', image_url: { url: imageUrl } }
+          ]
+        }
+      ],
+      max_tokens: 500
+    });
+
+    return NextResponse.json({
+      analysis: response.choices[0].message.content
+    });
+
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Failed to analyze image' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+### Batch Image Processing
+
+```python
+import asyncio
+from openai import AsyncOpenAI
+
+async_client = AsyncOpenAI(
+    base_url="https://api.infyr.ai/v1",
+    api_key="YOUR_INFYR_API_KEY"
+)
+
+async def analyze_image(image_url, prompt):
+    response = await async_client.chat.completions.create(
+        model="llama3-vision-11b",
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt},
+                    {"type": "image_url", "image_url": {"url": image_url}}
+                ]
+            }
+        ]
+    )
+    return response.choices[0].message.content
+
+async def batch_analyze(image_urls, prompt):
+    tasks = [analyze_image(url, prompt) for url in image_urls]
+    results = await asyncio.gather(*tasks)
+    return results
+
+# Usage
+image_urls = ["https://example.com/img1.jpg", "https://example.com/img2.jpg"]
+results = asyncio.run(batch_analyze(image_urls, "Describe this image briefly"))
+```

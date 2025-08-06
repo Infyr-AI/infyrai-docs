@@ -1,0 +1,1124 @@
+# Video Models
+
+Infyr.AI provides cutting-edge video generation capabilities powered by state-of-the-art models. Create high-quality videos from text descriptions with customizable parameters for aspect ratio, duration, and creative control.
+
+> **Note**: Video generation models use Infyr.AI's custom HTTP API endpoints (not OpenAI-compatible). The basic examples below show the actual HTTP API format. Complex use case examples are provided for illustration and would need to be adapted to use direct HTTP requests.
+
+## Available Models
+
+### Google Veo 3 Fast (`google/veo3/fast`)
+
+**Capabilities:**
+- High-quality video generation from text prompts
+- Multiple aspect ratios and resolutions
+- Fast generation with optimized processing
+- Creative control with guidance and negative prompts
+- Seed-based reproducible generation
+
+**Specifications:**
+- **Max Duration**: 10 seconds
+- **Pricing**: $0.2 per second of generated video
+- **Aspect Ratios**: 16:9, 9:16, 1:1, 4:3, 3:4, 21:9, 9:21
+- **Resolution**: Up to 1080p
+- **Generation Time**: ~2-5 minutes (fast variant)
+
+#### Basic Video Generation
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/video/generations" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "google/veo3/fast",
+    "prompt": "A serene mountain landscape with a flowing river, golden hour lighting, cinematic quality",
+    "duration": 5,
+    "aspect_ratio": "16:9"
+  }'
+```
+
+**Response:**
+```json
+{
+  "request_id": "req_12345",
+  "status": "processing",
+  "model": "google/veo3/fast",
+  "prompt": "A serene mountain landscape with a flowing river...",
+  "duration": 5,
+  "aspect_ratio": "16:9"
+}
+```
+
+#### Advanced Video Generation
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/video/generations" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "google/veo3/fast",
+    "prompt": "A futuristic city skyline at sunset with flying cars, neon lights, and glass buildings reflecting the orange sky",
+    "duration": 8,
+    "aspect_ratio": "21:9",
+    "guidance_scale": 7.5,
+    "num_inference_steps": 30,
+    "negative_prompt": "blurry, low quality, distorted, unrealistic",
+    "seed": 12345
+  }'
+```
+
+#### Check Generation Status
+
+```bash
+curl -X GET "https://api.infyr.ai/v1/video/generations/status/req_12345" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY"
+```
+
+**Status Response:**
+```json
+{
+  "request_id": "req_12345",
+  "status": "completed",
+  "progress": 100,
+  "estimated_time_remaining": 0
+}
+```
+
+#### Get Generated Video
+
+```bash
+curl -X GET "https://api.infyr.ai/v1/video/generations/result/req_12345" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY"
+```
+
+**Result Response:**
+```json
+{
+  "request_id": "req_12345",
+  "status": "completed",
+  "video": {
+    "url": "https://cdn.infyr.ai/videos/req_12345.mp4",
+    "duration": 8,
+    "resolution": "1920x816",
+    "aspect_ratio": "21:9"
+  }
+}
+```
+
+### Pixverse Models
+
+#### Pixverse v2 (`pixverse/pixverse-v2`)
+
+**Capabilities:**
+- High-quality video generation
+- Artistic and realistic styles
+- Motion control and scene composition
+- Extended duration support
+
+**Specifications:**
+- **Max Duration**: 10 seconds
+- **Pricing**: $0.15 per second
+- **Aspect Ratios**: 16:9, 9:16, 1:1
+- **Strengths**: Artistic content, character animation
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/video/generations" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "pixverse/pixverse-v2",
+    "prompt": "An enchanted forest with magical creatures, glowing mushrooms, and ethereal lighting, fantasy art style",
+    "duration": 6,
+    "aspect_ratio": "16:9",
+    "style": "fantasy"
+  }'
+```
+    prompt="An enchanted forest with magical creatures, glowing mushrooms, and ethereal lighting, fantasy art style",
+    duration=6,
+    aspect_ratio="16:9",
+    style="fantasy"  # Model-specific parameter
+)
+```
+
+#### Pixverse v1.5 (`pixverse/pixverse-v1.5`)
+
+**Capabilities:**
+- Stable video generation
+- Good motion consistency
+- Character-focused content
+- Reliable quality output
+
+**Specifications:**
+- **Max Duration**: 8 seconds
+- **Pricing**: $0.1 per second
+- **Aspect Ratios**: 16:9, 9:16, 1:1
+- **Strengths**: Character animation, stable motion
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/video/generations" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "pixverse/pixverse-v1.5",
+    "prompt": "A robot chef cooking in a modern kitchen, smooth movements, detailed textures",
+    "duration": 6,
+    "aspect_ratio": "16:9",
+    "motion_strength": 0.8
+  }'
+```
+
+#### Pixverse v1.2.5 (`pixverse/pixverse-v1.2.5`)
+
+**Capabilities:**
+- Cost-effective video generation
+- Good quality for simple scenes
+- Fast generation times
+- Basic motion and scene understanding
+
+**Specifications:**
+- **Max Duration**: 6 seconds
+- **Pricing**: $0.08 per second
+- **Aspect Ratios**: 16:9, 9:16, 1:1
+- **Strengths**: Simple scenes, cost efficiency
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/video/generations" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "pixverse/pixverse-v1.2.5",
+    "prompt": "Ocean waves crashing on a sandy beach, peaceful morning light",
+    "duration": 4,
+    "aspect_ratio": "16:9"
+  }'
+```
+
+## Use Case Examples
+
+### 1. Marketing Video Creation
+
+```python
+import json
+from datetime import datetime
+
+class MarketingVideoGenerator:
+    def __init__(self, api_key):
+        self.client = OpenAI(
+            base_url="https://api.infyr.ai/v1",
+            api_key=api_key
+        )
+    
+    def create_product_showcase(self, product_info):
+        """Generate product showcase videos"""
+        
+        # Create main product video
+        main_prompt = f"""
+        Professional product showcase of {product_info['name']}: 
+        {product_info['description']}. 
+        Clean studio lighting, rotating product display, 
+        premium commercial style, 4K quality
+        """
+        
+        main_video = self.client.video.generations.create(
+            model="google/veo3/fast",
+            prompt=main_prompt,
+            duration=8,
+            aspect_ratio="16:9",
+            guidance_scale=8.0,
+            negative_prompt="blurry, low quality, amateur, cluttered background"
+        )
+        
+        # Create social media versions
+        social_formats = [
+            {"ratio": "9:16", "platform": "instagram_stories"},
+            {"ratio": "1:1", "platform": "instagram_post"},
+            {"ratio": "9:16", "platform": "tiktok"}
+        ]
+        
+        social_videos = []
+        for format_info in social_formats:
+            social_prompt = f"""
+            {product_info['name']} for social media: 
+            {product_info['description']}. 
+            Dynamic presentation, trendy style, 
+            optimized for {format_info['platform']}
+            """
+            
+            video = self.client.video.generations.create(
+                model="pixverse/pixverse-v2",
+                prompt=social_prompt,
+                duration=5,
+                aspect_ratio=format_info["ratio"],
+                guidance_scale=7.0
+            )
+            
+            social_videos.append({
+                "platform": format_info["platform"],
+                "request_id": video.request_id,
+                "aspect_ratio": format_info["ratio"]
+            })
+        
+        return {
+            "main_video": main_video.request_id,
+            "social_videos": social_videos,
+            "product_info": product_info
+        }
+    
+    def wait_for_completion(self, request_ids):
+        """Wait for multiple videos to complete"""
+        completed_videos = {}
+        pending_ids = set(request_ids)
+        
+        while pending_ids:
+            for request_id in list(pending_ids):
+                status = self.client.video.generations.status(request_id)
+                
+                if status.status == "completed":
+                    result = self.client.video.generations.result(request_id)
+                    completed_videos[request_id] = result.video.url
+                    pending_ids.remove(request_id)
+                elif status.status == "failed":
+                    print(f"Video {request_id} failed: {status.error}")
+                    pending_ids.remove(request_id)
+            
+            if pending_ids:
+                print(f"Waiting for {len(pending_ids)} videos to complete...")
+                time.sleep(60)
+        
+        return completed_videos
+
+# Usage
+generator = MarketingVideoGenerator("YOUR_API_KEY")
+
+product = {
+    "name": "EcoBottle Pro",
+    "description": "Sustainable water bottle with temperature control and smart tracking"
+}
+
+videos = generator.create_product_showcase(product)
+all_request_ids = [videos["main_video"]] + [v["request_id"] for v in videos["social_videos"]]
+completed_videos = generator.wait_for_completion(all_request_ids)
+
+print("All videos completed:")
+for request_id, url in completed_videos.items():
+    print(f"{request_id}: {url}")
+```
+
+### 2. Educational Content Creation
+
+```python
+class EducationalVideoCreator:
+    def __init__(self, api_key):
+        self.client = OpenAI(
+            base_url="https://api.infyr.ai/v1",
+            api_key=api_key
+        )
+    
+    def create_lesson_series(self, topic, lessons):
+        """Create a series of educational videos"""
+        
+        video_series = []
+        
+        for i, lesson in enumerate(lessons):
+            # Create explanatory video
+            explanation_prompt = f"""
+            Educational content: {lesson['title']}. 
+            {lesson['content']}. 
+            Clean educational style, diagrams and illustrations, 
+            professional presentation, clear visual hierarchy
+            """
+            
+            video = self.client.video.generations.create(
+                model="google/veo3/fast",
+                prompt=explanation_prompt,
+                duration=10,
+                aspect_ratio="16:9",
+                guidance_scale=7.5,
+                negative_prompt="confusing, cluttered, unprofessional, distracting"
+            )
+            
+            # Create accompanying summary using text model
+            summary = self.client.chat.completions.create(
+                model="lumo-8b",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "Create a concise summary and key takeaways for educational content."
+                    },
+                    {
+                        "role": "user", 
+                        "content": f"Summarize this lesson: {lesson['title']} - {lesson['content']}"
+                    }
+                ],
+                max_tokens=300
+            )
+            
+            video_series.append({
+                "lesson_number": i + 1,
+                "title": lesson['title'],
+                "video_request_id": video.request_id,
+                "summary": summary.choices[0].message.content,
+                "duration": 10
+            })
+        
+        return {
+            "topic": topic,
+            "series": video_series,
+            "total_lessons": len(lessons)
+        }
+
+# Usage
+creator = EducationalVideoCreator("YOUR_API_KEY")
+
+lessons = [
+    {
+        "title": "Introduction to Machine Learning",
+        "content": "Basic concepts of ML, supervised vs unsupervised learning, common algorithms overview"
+    },
+    {
+        "title": "Neural Networks Fundamentals", 
+        "content": "How neural networks work, layers, activation functions, backpropagation basics"
+    },
+    {
+        "title": "Deep Learning Applications",
+        "content": "Real-world applications of deep learning in computer vision, NLP, and robotics"
+    }
+]
+
+series = creator.create_lesson_series("Machine Learning Basics", lessons)
+print(f"Created {series['total_lessons']} educational videos on {series['topic']}")
+```
+
+### 3. Creative Storytelling
+
+```python
+class StoryVideoGenerator:
+    def __init__(self, api_key):
+        self.client = OpenAI(
+            base_url="https://api.infyr.ai/v1", 
+            api_key=api_key
+        )
+    
+    def create_story_sequence(self, story_outline):
+        """Create a sequence of videos telling a story"""
+        
+        # First, expand the story using a text model
+        story_expansion = self.client.chat.completions.create(
+            model="deepseek-70b",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a creative writer. Expand story outlines into detailed scene descriptions perfect for video generation."
+                },
+                {
+                    "role": "user",
+                    "content": f"Expand this story outline into 4-5 detailed scenes: {story_outline}"
+                }
+            ],
+            max_tokens=1000
+        )
+        
+        expanded_story = story_expansion.choices[0].message.content
+        
+        # Parse scenes (simplified - in practice you'd use more sophisticated parsing)
+        scenes = expanded_story.split('\n\n')
+        
+        story_videos = []
+        
+        for i, scene in enumerate(scenes[:5]):  # Limit to 5 scenes
+            # Create cinematic video for each scene
+            cinematic_prompt = f"""
+            Cinematic scene {i+1}: {scene}. 
+            Professional filmmaking, dramatic lighting, 
+            smooth camera movements, high production value,
+            emotional storytelling, detailed environments
+            """
+            
+            video = self.client.video.generations.create(
+                model="google/veo3/fast",
+                prompt=cinematic_prompt,
+                duration=8,
+                aspect_ratio="21:9",  # Cinematic format
+                guidance_scale=8.5,
+                seed=42 + i  # Consistent style across scenes
+            )
+            
+            story_videos.append({
+                "scene_number": i + 1,
+                "description": scene[:100] + "...",
+                "video_request_id": video.request_id,
+                "aspect_ratio": "21:9",
+                "duration": 8
+            })
+        
+        return {
+            "story_outline": story_outline,
+            "expanded_story": expanded_story,
+            "scenes": story_videos,
+            "total_duration": len(story_videos) * 8
+        }
+    
+    def create_character_introduction(self, character_info):
+        """Create character introduction video"""
+        
+        character_prompt = f"""
+        Character introduction: {character_info['name']}.
+        {character_info['description']}.
+        {character_info['background']}.
+        Cinematic character reveal, dramatic lighting,
+        personality-defining moment, high-quality animation
+        """
+        
+        video = self.client.video.generations.create(
+            model="pixverse/pixverse-v2",
+            prompt=character_prompt,
+            duration=6,
+            aspect_ratio="16:9",
+            guidance_scale=8.0
+        )
+        
+        return video.request_id
+
+# Usage
+storyteller = StoryVideoGenerator("YOUR_API_KEY")
+
+story = """
+A young inventor discovers an ancient artifact that grants the power to 
+manipulate time, but each use comes with unexpected consequences that 
+threaten to unravel the fabric of reality itself.
+"""
+
+story_sequence = storyteller.create_story_sequence(story)
+print(f"Created {len(story_sequence['scenes'])} scene videos")
+print(f"Total story duration: {story_sequence['total_duration']} seconds")
+```
+
+### 4. Social Media Content Automation
+
+```python
+import random
+from datetime import datetime, timedelta
+
+class SocialMediaVideoAutomation:
+    def __init__(self, api_key):
+        self.client = OpenAI(
+            base_url="https://api.infyr.ai/v1",
+            api_key=api_key
+        )
+        
+        self.platform_specs = {
+            "instagram_reel": {"aspect_ratio": "9:16", "duration": 7, "model": "pixverse/pixverse-v2"},
+            "youtube_short": {"aspect_ratio": "9:16", "duration": 8, "model": "google/veo3/fast"},
+            "tiktok": {"aspect_ratio": "9:16", "duration": 6, "model": "pixverse/pixverse-v2"},
+            "twitter": {"aspect_ratio": "16:9", "duration": 5, "model": "pixverse/pixverse-v1.5"},
+            "linkedin": {"aspect_ratio": "16:9", "duration": 6, "model": "google/veo3/fast"}
+        }
+    
+    def generate_trending_content(self, niche, platforms, num_videos=5):
+        """Generate trending content for multiple platforms"""
+        
+        # Generate trending ideas using AI
+        ideas_prompt = f"""
+        Generate {num_videos} trending video ideas for {niche} content.
+        Focus on current trends, engaging hooks, and viral potential.
+        Make each idea unique and platform-optimized.
+        """
+        
+        ideas_response = self.client.chat.completions.create(
+            model="lumo-8b",
+            messages=[
+                {"role": "system", "content": "You are a social media content strategist focused on viral trends."},
+                {"role": "user", "content": ideas_prompt}
+            ],
+            max_tokens=800
+        )
+        
+        # Parse ideas (simplified)
+        ideas = ideas_response.choices[0].message.content.split('\n')
+        ideas = [idea.strip() for idea in ideas if idea.strip() and len(idea) > 20]
+        
+        content_batches = []
+        
+        for idea in ideas[:num_videos]:
+            platform_videos = {}
+            
+            for platform in platforms:
+                if platform not in self.platform_specs:
+                    continue
+                
+                specs = self.platform_specs[platform]
+                
+                # Adapt content for platform
+                platform_prompt = f"""
+                {niche} content for {platform}: {idea}.
+                Optimized for {platform} audience, trending style,
+                eye-catching visuals, engaging from first frame,
+                high energy, social media optimized
+                """
+                
+                video = self.client.video.generations.create(
+                    model=specs["model"],
+                    prompt=platform_prompt,
+                    duration=specs["duration"],
+                    aspect_ratio=specs["aspect_ratio"],
+                    guidance_scale=7.0,
+                    seed=random.randint(1, 10000)
+                )
+                
+                platform_videos[platform] = {
+                    "request_id": video.request_id,
+                    "specs": specs,
+                    "adapted_idea": idea
+                }
+            
+            content_batches.append({
+                "original_idea": idea,
+                "platform_videos": platform_videos,
+                "created_at": datetime.now().isoformat()
+            })
+        
+        return content_batches
+    
+    def create_product_demo_series(self, product, demo_angles):
+        """Create a series of product demo videos from different angles"""
+        
+        demo_videos = []
+        
+        for angle in demo_angles:
+            demo_prompt = f"""
+            Product demonstration: {product['name']} - {angle}.
+            {product['description']}.
+            Professional product demo, clean background,
+            clear feature showcase, engaging presentation,
+            commercial quality
+            """
+            
+            # Create for multiple formats
+            formats = ["instagram_reel", "youtube_short"]
+            
+            for format_name in formats:
+                specs = self.platform_specs[format_name]
+                
+                video = self.client.video.generations.create(
+                    model=specs["model"],
+                    prompt=demo_prompt,
+                    duration=specs["duration"],
+                    aspect_ratio=specs["aspect_ratio"],
+                    guidance_scale=7.5
+                )
+                
+                demo_videos.append({
+                    "angle": angle,
+                    "format": format_name,
+                    "request_id": video.request_id,
+                    "product": product['name']
+                })
+        
+        return demo_videos
+
+# Usage
+automation = SocialMediaVideoAutomation("YOUR_API_KEY")
+
+# Generate trending fitness content
+fitness_content = automation.generate_trending_content(
+    niche="fitness and wellness",
+    platforms=["instagram_reel", "tiktok", "youtube_short"],
+    num_videos=3
+)
+
+print(f"Generated {len(fitness_content)} content batches")
+
+# Create product demos
+product = {
+    "name": "SmartFit Tracker",
+    "description": "AI-powered fitness tracker with health insights and workout optimization"
+}
+
+demo_angles = [
+    "Unboxing and first impressions",
+    "Key features demonstration", 
+    "Workout tracking in action",
+    "Health insights dashboard"
+]
+
+demos = automation.create_product_demo_series(product, demo_angles)
+print(f"Created {len(demos)} product demo videos")
+```
+
+## Best Practices
+
+### Prompt Engineering for Video Generation
+
+```python
+def optimize_video_prompt(base_prompt, style="cinematic", quality_terms=True):
+    """Optimize prompts for better video generation results"""
+    
+    quality_keywords = [
+        "high quality", "4K", "professional", "cinematic",
+        "detailed", "sharp focus", "well-lit", "smooth motion"
+    ] if quality_terms else []
+    
+    style_keywords = {
+        "cinematic": ["cinematic lighting", "film grain", "depth of field", "dramatic"],
+        "commercial": ["clean", "professional", "studio lighting", "product showcase"],
+        "artistic": ["creative", "stylized", "artistic", "unique perspective"],
+        "realistic": ["photorealistic", "natural", "authentic", "lifelike"]
+    }
+    
+    # Combine base prompt with style and quality terms
+    enhanced_prompt = base_prompt
+    
+    if style in style_keywords:
+        enhanced_prompt += f", {', '.join(style_keywords[style])}"
+    
+    if quality_keywords:
+        enhanced_prompt += f", {', '.join(quality_keywords)}"
+    
+    return enhanced_prompt
+
+# Example usage
+base_prompt = "A cat playing with a ball of yarn in a cozy living room"
+optimized_prompt = optimize_video_prompt(base_prompt, style="cinematic")
+print("Optimized prompt:", optimized_prompt)
+```
+
+### Cost Management and Optimization
+
+```python
+class VideoGenerationManager:
+    def __init__(self, api_key, budget_limit=50.0):
+        self.client = OpenAI(
+            base_url="https://api.infyr.ai/v1",
+            api_key=api_key
+        )
+        self.budget_limit = budget_limit
+        self.current_spend = 0.0
+        
+        self.model_costs = {
+            "google/veo3/fast": 0.2,  # per second
+            "pixverse/pixverse-v2": 0.15,
+            "pixverse/pixverse-v1.5": 0.1,
+            "pixverse/pixverse-v1.2.5": 0.08
+        }
+    
+    def estimate_cost(self, model, duration):
+        """Estimate cost for video generation"""
+        return self.model_costs.get(model, 0.2) * duration
+    
+    def select_optimal_model(self, duration, quality_requirement="medium"):
+        """Select the most cost-effective model for requirements"""
+        
+        model_quality = {
+            "pixverse/pixverse-v1.2.5": "basic",
+            "pixverse/pixverse-v1.5": "medium", 
+            "pixverse/pixverse-v2": "high",
+            "google/veo3/fast": "premium"
+        }
+        
+        # Filter models by quality requirement
+        suitable_models = [
+            model for model, quality in model_quality.items()
+            if self._quality_meets_requirement(quality, quality_requirement)
+        ]
+        
+        # Sort by cost (ascending)
+        suitable_models.sort(key=lambda m: self.model_costs[m])
+        
+        # Select cheapest suitable model
+        for model in suitable_models:
+            cost = self.estimate_cost(model, duration)
+            if self.current_spend + cost <= self.budget_limit:
+                return model
+        
+        return None
+    
+    def _quality_meets_requirement(self, model_quality, requirement):
+        quality_levels = {"basic": 1, "medium": 2, "high": 3, "premium": 4}
+        return quality_levels[model_quality] >= quality_levels[requirement]
+    
+    def generate_with_budget_control(self, prompt, duration, quality="medium", **kwargs):
+        """Generate video with automatic budget control"""
+        
+        # Select optimal model
+        model = self.select_optimal_model(duration, quality)
+        if not model:
+            raise Exception("Insufficient budget for video generation")
+        
+        # Estimate and track cost
+        estimated_cost = self.estimate_cost(model, duration)
+        
+        print(f"Using {model} - Estimated cost: ${estimated_cost:.3f}")
+        print(f"Budget remaining: ${self.budget_limit - self.current_spend:.2f}")
+        
+        # Generate video
+        response = self.client.video.generations.create(
+            model=model,
+            prompt=prompt,
+            duration=duration,
+            **kwargs
+        )
+        
+        # Update spend tracking
+        self.current_spend += estimated_cost
+        
+        return {
+            "request_id": response.request_id,
+            "model_used": model,
+            "estimated_cost": estimated_cost,
+            "remaining_budget": self.budget_limit - self.current_spend
+        }
+
+# Usage
+manager = VideoGenerationManager("YOUR_API_KEY", budget_limit=10.0)
+
+# Generate video with budget control
+result = manager.generate_with_budget_control(
+    prompt="A peaceful garden scene with butterflies",
+    duration=5,
+    quality="medium",
+    aspect_ratio="16:9"
+)
+
+print("Generation result:", result)
+```
+
+### Quality Optimization and Error Handling
+
+```python
+import time
+from typing import Optional, Dict, Any
+
+class RobustVideoGenerator:
+    def __init__(self, api_key):
+        self.client = OpenAI(
+            base_url="https://api.infyr.ai/v1",
+            api_key=api_key
+        )
+    
+    def generate_with_retries(
+        self, 
+        prompt: str,
+        duration: int,
+        model: str = "google/veo3/fast",
+        max_retries: int = 3,
+        **kwargs
+    ) -> Optional[Dict[str, Any]]:
+        """Generate video with retry logic and error handling"""
+        
+        for attempt in range(max_retries):
+            try:
+                # Generate video
+                response = self.client.video.generations.create(
+                    model=model,
+                    prompt=prompt,
+                    duration=duration,
+                    **kwargs
+                )
+                
+                print(f"Generation started: {response.request_id}")
+                
+                # Wait for completion with timeout
+                result = self._wait_for_completion_with_timeout(
+                    response.request_id,
+                    timeout_minutes=15
+                )
+                
+                if result:
+                    return {
+                        "request_id": response.request_id,
+                        "video_url": result,
+                        "model": model,
+                        "duration": duration,
+                        "attempt": attempt + 1
+                    }
+                
+            except Exception as e:
+                print(f"Attempt {attempt + 1} failed: {str(e)}")
+                
+                if attempt < max_retries - 1:
+                    # Wait before retry with exponential backoff
+                    wait_time = (2 ** attempt) * 60  # 1, 2, 4 minutes
+                    print(f"Waiting {wait_time/60:.1f} minutes before retry...")
+                    time.sleep(wait_time)
+                else:
+                    print("Max retries exceeded")
+        
+        return None
+    
+    def _wait_for_completion_with_timeout(self, request_id: str, timeout_minutes: int = 15) -> Optional[str]:
+        """Wait for video completion with timeout"""
+        
+        start_time = time.time()
+        timeout_seconds = timeout_minutes * 60
+        
+        while time.time() - start_time < timeout_seconds:
+            try:
+                status = self.client.video.generations.status(request_id)
+                
+                if status.status == "completed":
+                    result = self.client.video.generations.result(request_id)
+                    return result.video.url
+                elif status.status == "failed":
+                    print(f"Generation failed: {status.error}")
+                    return None
+                
+                # Wait before next check
+                time.sleep(30)
+                
+            except Exception as e:
+                print(f"Status check error: {e}")
+                time.sleep(60)  # Wait longer on error
+        
+        print(f"Generation timed out after {timeout_minutes} minutes")
+        return None
+    
+    def validate_parameters(self, model: str, duration: int, aspect_ratio: str) -> bool:
+        """Validate generation parameters"""
+        
+        valid_models = [
+            "google/veo3/fast", 
+            "pixverse/pixverse-v2",
+            "pixverse/pixverse-v1.5", 
+            "pixverse/pixverse-v1.2.5"
+        ]
+        
+        valid_ratios = ["16:9", "9:16", "1:1", "4:3", "3:4", "21:9", "9:21"]
+        
+        max_durations = {
+            "google/veo3/fast": 10,
+            "pixverse/pixverse-v2": 10,
+            "pixverse/pixverse-v1.5": 8,
+            "pixverse/pixverse-v1.2.5": 6
+        }
+        
+        if model not in valid_models:
+            print(f"Invalid model: {model}")
+            return False
+        
+        if duration > max_durations.get(model, 10):
+            print(f"Duration {duration}s exceeds max for {model}")
+            return False
+        
+        if aspect_ratio not in valid_ratios:
+            print(f"Invalid aspect ratio: {aspect_ratio}")
+            return False
+        
+        return True
+
+# Usage
+generator = RobustVideoGenerator("YOUR_API_KEY")
+
+# Generate with robust error handling
+result = generator.generate_with_retries(
+    prompt="A majestic eagle soaring over snow-capped mountains, golden hour lighting",
+    duration=8,
+    model="google/veo3/fast",
+    aspect_ratio="16:9",
+    guidance_scale=7.5,
+    max_retries=3
+)
+
+if result:
+    print("Video generated successfully:", result["video_url"])
+else:
+    print("Video generation failed after all retries")
+```
+
+## Integration Examples
+
+### React Web Application
+
+```javascript
+import React, { useState, useEffect } from 'react';
+import OpenAI from 'openai';
+
+const VideoGenerator = () => {
+  const [client] = useState(new OpenAI({
+    apiKey: process.env.REACT_APP_INFYR_API_KEY,
+    baseURL: 'https://api.infyr.ai/v1',
+    dangerouslyAllowBrowser: true
+  }));
+  
+  const [prompt, setPrompt] = useState('');
+  const [generatingVideo, setGeneratingVideo] = useState(false);
+  const [videoUrl, setVideoUrl] = useState('');
+  const [progress, setProgress] = useState('');
+
+  const generateVideo = async () => {
+    setGeneratingVideo(true);
+    setProgress('Starting video generation...');
+    
+    try {
+      // Start generation
+      const response = await client.video.generations.create({
+        model: 'google/veo3/fast',
+        prompt: prompt,
+        duration: 6,
+        aspect_ratio: '16:9'
+      });
+      
+      setProgress('Video generation in progress...');
+      
+      // Poll for completion
+      const checkStatus = async () => {
+        const status = await client.video.generations.status(response.request_id);
+        
+        if (status.status === 'completed') {
+          const result = await client.video.generations.result(response.request_id);
+          setVideoUrl(result.video.url);
+          setProgress('Video completed!');
+          setGeneratingVideo(false);
+        } else if (status.status === 'failed') {
+          setProgress('Video generation failed');
+          setGeneratingVideo(false);
+        } else {
+          setTimeout(checkStatus, 5000);
+        }
+      };
+      
+      checkStatus();
+      
+    } catch (error) {
+      setProgress(`Error: ${error.message}`);
+      setGeneratingVideo(false);
+    }
+  };
+
+  return (
+    <div className="video-generator">
+      <h2>AI Video Generator</h2>
+      
+      <textarea
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        placeholder="Describe the video you want to generate..."
+        rows={4}
+        cols={50}
+      />
+      
+      <br />
+      
+      <button 
+        onClick={generateVideo}
+        disabled={generatingVideo || !prompt.trim()}
+      >
+        {generatingVideo ? 'Generating...' : 'Generate Video'}
+      </button>
+      
+      {progress && <p>{progress}</p>}
+      
+      {videoUrl && (
+        <div>
+          <h3>Generated Video:</h3>
+          <video controls width="600">
+            <source src={videoUrl} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default VideoGenerator;
+```
+
+### Node.js API Server
+
+```javascript
+const express = require('express');
+const OpenAI = require('openai');
+const app = express();
+
+app.use(express.json());
+
+const openai = new OpenAI({
+  apiKey: process.env.INFYR_API_KEY,
+  baseURL: 'https://api.infyr.ai/v1'
+});
+
+// Store active generations
+const activeGenerations = new Map();
+
+app.post('/api/generate-video', async (req, res) => {
+  const { prompt, duration = 6, aspectRatio = '16:9', model = 'google/veo3/fast' } = req.body;
+  
+  try {
+    const response = await openai.video.generations.create({
+      model,
+      prompt,
+      duration,
+      aspect_ratio: aspectRatio
+    });
+    
+    // Store generation info
+    activeGenerations.set(response.request_id, {
+      status: 'generating',
+      startTime: Date.now(),
+      prompt
+    });
+    
+    res.json({
+      success: true,
+      request_id: response.request_id,
+      status: 'started'
+    });
+    
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+app.get('/api/video-status/:requestId', async (req, res) => {
+  const { requestId } = req.params;
+  
+  try {
+    const status = await openai.video.generations.status(requestId);
+    
+    // Update stored info
+    if (activeGenerations.has(requestId)) {
+      activeGenerations.get(requestId).status = status.status;
+    }
+    
+    let videoUrl = null;
+    if (status.status === 'completed') {
+      const result = await openai.video.generations.result(requestId);
+      videoUrl = result.video.url;
+      
+      // Clean up completed generation
+      activeGenerations.delete(requestId);
+    }
+    
+    res.json({
+      request_id: requestId,
+      status: status.status,
+      video_url: videoUrl,
+      error: status.error || null
+    });
+    
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+app.get('/api/active-generations', (req, res) => {
+  const generations = Array.from(activeGenerations.entries()).map(([id, info]) => ({
+    request_id: id,
+    ...info
+  }));
+  
+  res.json({ active_generations: generations });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+```
+
+The video models provide powerful capabilities for creating high-quality video content across various use cases, from marketing and education to creative storytelling and social media automation. The examples above demonstrate comprehensive patterns for integrating these models into applications while handling the asynchronous nature of video generation effectively.
