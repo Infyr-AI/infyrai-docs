@@ -27,18 +27,52 @@ const config: DocsThemeConfig = {
   docsRepositoryBase: "https://github.com/infyr-ai/infyrai-docs",
   footer: {
     text: (
-      <div className="flex flex-col items-center justify-center space-y-4 w-full text-center">
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          textAlign: "center",
+          padding: "2rem 1rem",
+          gap: "1.5rem",
+        }}
+      >
         {/* Social icons */}
-        <div className="flex items-center justify-center gap-6">
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "2rem",
+          }}
+        >
           <a
             href="https://x.com/infyrai"
             aria-label="twitter"
-            className="text-gray-400 duration-300 ease-in hover:text-white"
+            style={{
+              color: "#9CA3AF",
+              transition: "all 0.3s ease",
+              padding: "0.5rem",
+              borderRadius: "0.5rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = "#FFFFFF";
+              e.currentTarget.style.backgroundColor = "#374151";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = "#9CA3AF";
+              e.currentTarget.style.backgroundColor = "transparent";
+            }}
             target="_blank"
             rel="noopener noreferrer"
           >
             <svg
-              className="fill-current"
+              style={{ fill: "currentColor" }}
               width="24"
               height="24"
               viewBox="0 0 24 24"
@@ -55,7 +89,23 @@ const config: DocsThemeConfig = {
           <a
             href="https://dexscreener.com/solana/bwo2dodj4wrra4bhq5dtg7pudxgy9192dkxezhtv8uar"
             aria-label="dexscreener"
-            className="text-gray-400 duration-300 ease-in hover:text-white"
+            style={{
+              color: "#9CA3AF",
+              transition: "all 0.3s ease",
+              padding: "0.5rem",
+              borderRadius: "0.5rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = "#FFFFFF";
+              e.currentTarget.style.backgroundColor = "#374151";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = "#9CA3AF";
+              e.currentTarget.style.backgroundColor = "transparent";
+            }}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -75,9 +125,16 @@ const config: DocsThemeConfig = {
         </div>
 
         {/* Copyright text */}
-        <span className="text-sm text-gray-500 text-center">
+        <div
+          style={{
+            fontSize: "0.875rem",
+            color: "#6B7280",
+            lineHeight: "1.5",
+            textAlign: "center",
+          }}
+        >
           Infyr.AI 2025. All rights reserved.
-        </span>
+        </div>
       </div>
     ),
   },
@@ -86,12 +143,46 @@ const config: DocsThemeConfig = {
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content="@infyrai" />
       <meta name="twitter:creator" content="@infyrai" />
+      <meta
+        name="twitter:title"
+        content="Infyr.AI Documentation - Decentralized AI Inferencing Platform"
+      />
+      <meta
+        name="twitter:description"
+        content="Infyr.AI is a decentralized, serverless AI inferencing platform built on Solana blockchain. Access powerful AI models with our APIs while solving GPU shortage challenges through our decentralized exchange."
+      />
       <meta name="twitter:site:domain" content="docs.infyr.ai" />
       <meta name="twitter:image" content="/logo.png" />
+      <meta
+        property="og:title"
+        content="Infyr.AI Documentation - Decentralized AI Inferencing Platform"
+      />
+      <meta
+        property="og:description"
+        content="Infyr.AI is a decentralized, serverless AI inferencing platform built on Solana blockchain. Access powerful AI models with our APIs while solving GPU shortage challenges through our decentralized exchange."
+      />
       <meta property="og:image" content="/logo.png" />
       <meta name="msapplication-TileColor" content="#000000" />
       <meta name="theme-color" content="#000000" />
       <link rel="icon" href="/favicon.ico" />
+      <style>{`
+        /* Simple footer centering - minimal interference with Nextra */
+        footer {
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+          text-align: center !important;
+        }
+        
+        /* Ensure footer content is centered */
+        footer > div {
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+          width: 100% !important;
+          text-align: center !important;
+        }
+      `}</style>
     </>
   ),
   useNextSeoProps() {
