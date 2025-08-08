@@ -152,7 +152,7 @@ const config: DocsThemeConfig = {
         content="Infyr.AI is a decentralized, serverless AI inferencing platform built on Solana blockchain. Access powerful AI models with our APIs while solving GPU shortage challenges through our decentralized exchange."
       />
       <meta name="twitter:site:domain" content="docs.infyr.ai" />
-      <meta name="twitter:image" content="/logo.png" />
+      <meta name="twitter:image" content="https://docs.infyr.ai/logo.png" />
       <meta
         property="og:title"
         content="Infyr.AI Documentation - Decentralized AI Inferencing Platform"
@@ -161,7 +161,7 @@ const config: DocsThemeConfig = {
         property="og:description"
         content="Infyr.AI is a decentralized, serverless AI inferencing platform built on Solana blockchain. Access powerful AI models with our APIs while solving GPU shortage challenges through our decentralized exchange."
       />
-      <meta property="og:image" content="/logo.png" />
+      <meta property="og:image" content="https://docs.infyr.ai/logo.png" />
       <meta property="og:url" content="https://docs.infyr.ai" />
       <meta property="og:type" content="website" />
       <meta property="og:site_name" content="Infyr.AI Documentation" />
