@@ -180,20 +180,29 @@ const config: DocsThemeConfig = {
       <link rel="icon" href="/favicon.ico" />
       <link rel="canonical" href="https://docs.infyr.ai" />
       <style>{`
-        /* Simple footer centering - minimal interference with Nextra */
-        footer {
+        /* Center align Nextra docs footer */
+        .nextra-footer {
           display: flex !important;
           justify-content: center !important;
           align-items: center !important;
           text-align: center !important;
+          width: 100% !important;
         }
-        
-        /* Ensure footer content is centered */
-        footer > div {
+
+        /* Nextra wraps footer content inside a flex container with justify-between.
+           Override that to center. */
+        .nextra-footer > div {
           display: flex !important;
           justify-content: center !important;
           align-items: center !important;
           width: 100% !important;
+          gap: 0 !important;
+        }
+
+        /* Ensure the inner text container does not right-align */
+        .nextra-footer .nx-text-right,
+        .nextra-footer .nx-text-center,
+        .nextra-footer div {
           text-align: center !important;
         }
       `}</style>
