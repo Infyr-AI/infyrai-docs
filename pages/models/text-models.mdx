@@ -133,6 +133,134 @@ curl -X POST "https://api.infyr.ai/v1/chat/completions" \
   }'
 ```
 
+#### OpenAI GPT-OSS Models
+
+**OpenAI GPT-OSS 20B** (`openai/gpt-oss-20b`)
+- **Use Case**: Open-source aligned, general-purpose text generation
+- **Context Length**: 131,072 tokens
+- **Pricing**: $0.06 input / $0.24 output per million tokens
+- **Supports**: Tool calling, function calls
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.infyr.ai/v1",
+    api_key="YOUR_INFYR_API_KEY"
+)
+
+response = client.chat.completions.create(
+    model="openai/gpt-oss-20b",
+    messages=[
+        {"role": "system", "content": "You are a concise assistant."},
+        {"role": "user", "content": "Give me 3 ideas for a weekend project using Python."}
+    ],
+    max_tokens=400,
+    temperature=0.7
+)
+
+print(response.choices[0].message.content)
+```
+
+```javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: 'YOUR_INFYR_API_KEY',
+  baseURL: 'https://api.infyr.ai/v1',
+});
+
+const response = await openai.chat.completions.create({
+  model: 'openai/gpt-oss-20b',
+  messages: [
+    { role: 'system', content: 'You are a concise assistant.' },
+    { role: 'user', content: 'Give me 3 ideas for a weekend project using Python.' }
+  ],
+  max_tokens: 400,
+  temperature: 0.7
+});
+
+console.log(response.choices[0].message.content);
+```
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "openai/gpt-oss-20b",
+    "messages": [
+      {"role": "system", "content": "You are a concise assistant."},
+      {"role": "user", "content": "Give me 3 ideas for a weekend project using Python."}
+    ],
+    "max_tokens": 400,
+    "temperature": 0.7
+  }'
+```
+
+**OpenAI GPT-OSS 120B** (`openai/gpt-oss-120b`)
+- **Use Case**: Higher-quality general-purpose generation with larger parameter count
+- **Context Length**: 131,072 tokens
+- **Pricing**: $0.18 input / $0.72 output per million tokens
+- **Supports**: Tool calling, function calls
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.infyr.ai/v1",
+    api_key="YOUR_INFYR_API_KEY"
+)
+
+response = client.chat.completions.create(
+    model="openai/gpt-oss-120b",
+    messages=[
+        {"role": "system", "content": "You are an expert technical writer."},
+        {"role": "user", "content": "Draft a clear README for a CLI tool that queries a weather API."}
+    ],
+    max_tokens=800,
+    temperature=0.6
+)
+
+print(response.choices[0].message.content)
+```
+
+```javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: 'YOUR_INFYR_API_KEY',
+  baseURL: 'https://api.infyr.ai/v1',
+});
+
+const response = await openai.chat.completions.create({
+  model: 'openai/gpt-oss-120b',
+  messages: [
+    { role: 'system', content: 'You are an expert technical writer.' },
+    { role: 'user', content: 'Draft a clear README for a CLI tool that queries a weather API.' }
+  ],
+  max_tokens: 800,
+  temperature: 0.6
+});
+
+console.log(response.choices[0].message.content);
+```
+
+```bash
+curl -X POST "https://api.infyr.ai/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_INFYR_API_KEY" \
+  -d '{
+    "model": "openai/gpt-oss-120b",
+    "messages": [
+      {"role": "system", "content": "You are an expert technical writer."},
+      {"role": "user", "content": "Draft a clear README for a CLI tool that queries a weather API."}
+    ],
+    "max_tokens": 800,
+    "temperature": 0.6
+  }'
+```
+
 #### Llama Models
 
 **Llama-3.3-70B** (`llama33-70b`)
